@@ -1,3 +1,4 @@
+import 'package:diario/screens/registro_anotacao_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -83,6 +84,11 @@ class _CalendarioState extends State<Calendario> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay; // update `_focusedDay` here as well
           });
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (BuildContext context) => const RegistroAnotacaoPage(),
+            ),
+          );
         },
       ),
     );
