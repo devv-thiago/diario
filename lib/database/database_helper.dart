@@ -1,28 +1,23 @@
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/foundation.dart';
+import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  late Database database;
+  static late final Database database;
 
-  static final DatabaseHelper _instance = DatabaseHelper._internal();
+  DatabaseHelper();
 
-  factory DatabaseHelper() {
-    return _instance;
-  }
-
-  DatabaseHelper._internal();
-
-  static Future<void> initDatabase({String path = ""}) async {
+  static Future initDatabase() async {
     try {
-      _instance.database = await openDatabase(path, version: 1,
-          onCreate: (Database db, int version) async {
+      database = await openDatabase(
+          join(await getDatabasesPath(), 'database.db'),
+          version: 1, onCreate: (Database db, int version) async {
         await db.execute('''
-          create table Anotacoes ( 
-                    dataAnotacao TEXT PRIMARY KEY, 
-                    titulo TEXT NOT NULL,
-                    conteudo TEXT NOT NULL,
-                    caminhoImagem TEXT NOT NULL
+          CREATE TABLE Anotacoes ( 
+            dataAnotacao TEXT PRIMARY KEY, 
+            conteudo TEXT NOT NULL,
+            caminhoImagem TEXT NOT NULL
           );
         ''');
       });
@@ -32,55 +27,62 @@ class DatabaseHelper {
     }
   }
 
-  Future deletarAnotacao(String dataAnotacao) async {
+  Future<void> deletarAnotacao(String dataAnotacao) async {
     try {
       await database.rawDelete(
-          "DELETE FROM Anotacoes WHERE dataAnotacao = $dataAnotacao");
+          "DELETE FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
       debugPrint("Anotação deletada");
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future inserirAnotacao(AnotacaoModel novaAnotacao) async {
+  Future<void> inserirAnotacao(AnotacaoModel novaAnotacao) async {
     try {
       await database.rawInsert('''
-            INSERT INTO Anotacoes(dataAnotacao, 
-                                  titulo, 
-                                  conteudo, 
-                                  caminhoImagem) 
-            VALUES (${novaAnotacao.dataAnotacao}, 
-                    ${novaAnotacao.titulo}, 
-                    ${novaAnotacao.conteudo}, 
-                    ${novaAnotacao.caminhoImagem});
-          ''');
+        INSERT INTO Anotacoes (dataAnotacao, conteudo, caminhoImagem) 
+        VALUES (?, ?, ?)
+      ''', [
+        novaAnotacao.dataAnotacao.toString(),
+        novaAnotacao.conteudo,
+        novaAnotacao.caminhoImagem
+      ]);
       debugPrint("Anotação cadastrada com sucesso");
+      await database.rawQuery("SELECT * FROM Anotacoes");
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future atualizarAnotacao(String dataAnotacao, AnotacaoModel anotacao) async {
+  Future<void> atualizarAnotacao(
+      String dataAnotacao, AnotacaoModel anotacao) async {
     try {
-      await database.rawInsert('''
-                                UPDATE Anotacoes ;
-                                SET dataAnotacao = ${anotacao.dataAnotacao},
-                                    titulo = ${anotacao.titulo},
-                                    conteudo = ${anotacao.conteudo},
-                                    caminhoImagem = ${anotacao.caminhoImagem};
-                              ''');
+      await database.rawUpdate('''
+        UPDATE Anotacoes SET 
+          dataAnotacao = ?, 
+          conteudo = ?, 
+          caminhoImagem = ? 
+        WHERE dataAnotacao = ?
+      ''', [
+        anotacao.dataAnotacao.toString(),
+        anotacao.conteudo,
+        anotacao.caminhoImagem,
+        dataAnotacao
+      ]);
       debugPrint("Anotação atualizada com sucesso");
     } catch (e) {
       debugPrint(e.toString());
     }
   }
 
-  Future buscarAnotacao(String dataAnotacao) async {
+  Future<List<Map<String, dynamic>>> buscarAnotacao(String dataAnotacao) async {
     try {
-      await database.rawInsert(
-          "SELECT * FROM Anotacoes WHERE dataAnotacao = $dataAnotacao;");
+      List<Map<String, dynamic>> result = await database.rawQuery(
+          "SELECT * FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
+      return result;
     } catch (e) {
       debugPrint(e.toString());
+      return [];
     }
   }
 }

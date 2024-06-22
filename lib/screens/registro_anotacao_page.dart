@@ -1,3 +1,5 @@
+import 'package:diario/database/database_helper.dart';
+import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
@@ -10,10 +12,13 @@ class RegistroAnotacaoPage extends StatefulWidget {
 class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   late TextAlign _selectedAlign;
   bool _isBold = false;
+  final DatabaseHelper database = DatabaseHelper();
+  late TextEditingController _conteudoController;
 
   @override
   void initState() {
     _selectedAlign = TextAlign.left;
+    _conteudoController = TextEditingController();
     super.initState();
   }
 
@@ -85,6 +90,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
+                    controller: _conteudoController,
                     style: TextStyle(
                       fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
                     ),
@@ -99,6 +105,13 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 ),
               ),
             ),
+            ElevatedButton(
+                onPressed: () {
+                  AnotacaoModel novaAnotacao =
+                      AnotacaoModel(conteudo: _conteudoController.toString());
+                  database.inserirAnotacao(novaAnotacao);
+                },
+                child: const Text("Salvar"))
           ],
         ),
       ),

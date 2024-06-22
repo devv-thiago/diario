@@ -1,7 +1,6 @@
 class AnotacaoModel {
-  String titulo, conteudo, caminhoImagem;
-  DateTime dataAnotacao;
+  String conteudo, caminhoImagem;
+  String dataAnotacao = DateTime.now().toString();
 
-  AnotacaoModel(
-      this.titulo, this.conteudo, this.dataAnotacao, this.caminhoImagem);
+  AnotacaoModel({required this.conteudo, this.caminhoImagem = ""});
 }
