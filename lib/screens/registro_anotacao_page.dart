@@ -1,4 +1,4 @@
-import 'package:diario/database/database_helper.dart';
+import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 
@@ -12,8 +12,9 @@ class RegistroAnotacaoPage extends StatefulWidget {
 class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   late TextAlign _selectedAlign;
   bool _isBold = false;
-  final DatabaseHelper database = DatabaseHelper();
+  final AnotacaoController anotacaoController = AnotacaoController();
   late TextEditingController _conteudoController;
+  dynamic resultado;
 
   @override
   void initState() {
@@ -106,10 +107,16 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
               ),
             ),
             ElevatedButton(
-                onPressed: () {
-                  AnotacaoModel novaAnotacao =
-                      AnotacaoModel(conteudo: _conteudoController.toString());
-                  database.inserirAnotacao(novaAnotacao);
+                onPressed: () async {
+                  resultado = await anotacaoController
+                      .adicionarAnotacao(AnotacaoModel(
+                          dataAnotacao: DateTime.now().toString(),
+                          conteudo: _conteudoController.toString()))
+                      .whenComplete(() {
+                    if (resultado == "Anotação cadastrada com sucesso") {
+                      Navigator.of(context).pop();
+                    }
+                  });
                 },
                 child: const Text("Salvar"))
           ],

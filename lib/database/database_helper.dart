@@ -27,17 +27,17 @@ class DatabaseHelper {
     }
   }
 
-  Future<void> deletarAnotacao(String dataAnotacao) async {
+  Future<String> deletarAnotacao(String dataAnotacao) async {
     try {
       await database.rawDelete(
           "DELETE FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
-      debugPrint("Anotação deletada");
+      return "Anotação deletada";
     } catch (e) {
-      debugPrint(e.toString());
+      return "Anotação não deletada, erro: ${e.toString()}";
     }
   }
 
-  Future<void> inserirAnotacao(AnotacaoModel novaAnotacao) async {
+  Future<String> inserirAnotacao(AnotacaoModel novaAnotacao) async {
     try {
       await database.rawInsert('''
         INSERT INTO Anotacoes (dataAnotacao, conteudo, caminhoImagem) 
@@ -47,14 +47,13 @@ class DatabaseHelper {
         novaAnotacao.conteudo,
         novaAnotacao.caminhoImagem
       ]);
-      debugPrint("Anotação cadastrada com sucesso");
-      await database.rawQuery("SELECT * FROM Anotacoes");
+      return "Anotação cadastrada com sucesso";
     } catch (e) {
-      debugPrint(e.toString());
+      return "Não foi possível inserir a anotacao, erro: ${e.toString()}";
     }
   }
 
-  Future<void> atualizarAnotacao(
+  Future<String> atualizarAnotacao(
       String dataAnotacao, AnotacaoModel anotacao) async {
     try {
       await database.rawUpdate('''
@@ -69,9 +68,9 @@ class DatabaseHelper {
         anotacao.caminhoImagem,
         dataAnotacao
       ]);
-      debugPrint("Anotação atualizada com sucesso");
+      return "Anotação atualizada com sucesso";
     } catch (e) {
-      debugPrint(e.toString());
+      return "Não foi possível atualizar a anotação, erro:${e.toString()}";
     }
   }
 
@@ -81,7 +80,6 @@ class DatabaseHelper {
           "SELECT * FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
       return result;
     } catch (e) {
-      debugPrint(e.toString());
       return [];
     }
   }

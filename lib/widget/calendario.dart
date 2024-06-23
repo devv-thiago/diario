@@ -1,3 +1,4 @@
+import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/screens/registro_anotacao_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
@@ -5,8 +6,14 @@ import 'package:table_calendar/table_calendar.dart';
 class Calendario extends StatefulWidget {
   final double? height;
   final double? width;
+  final Function(List<Map<String, dynamic>>) onDateSelected;
 
-  const Calendario({this.height = 0, this.width = 0, super.key});
+  const Calendario({
+    this.height = 0,
+    this.width = 0,
+    required this.onDateSelected,
+    super.key,
+  });
 
   @override
   _CalendarioState createState() => _CalendarioState();
@@ -15,6 +22,7 @@ class Calendario extends StatefulWidget {
 class _CalendarioState extends State<Calendario> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  final AnotacaoController _anotacaoController = AnotacaoController();
 
   @override
   Widget build(BuildContext context) {
@@ -79,16 +87,25 @@ class _CalendarioState extends State<Calendario> {
         selectedDayPredicate: (day) {
           return isSameDay(_selectedDay, day);
         },
-        onDaySelected: (selectedDay, focusedDay) {
+        onDaySelected: (selectedDay, focusedDay) async {
           setState(() {
             _selectedDay = selectedDay;
-            _focusedDay = focusedDay; // update `_focusedDay` here as well
+            _focusedDay = focusedDay;
           });
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (BuildContext context) => const RegistroAnotacaoPage(),
-            ),
-          );
+
+          List<Map<String, dynamic>> resultado = await _anotacaoController
+              .visualizarAnotacao(_selectedDay.toString());
+          debugPrint('Resultado: $resultado');
+
+          if (resultado.isEmpty) {
+            Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (BuildContext context) => const RegistroAnotacaoPage(),
+              ),
+            );
+          } else {
+            widget.onDateSelected(resultado);
+          }
         },
       ),
     );

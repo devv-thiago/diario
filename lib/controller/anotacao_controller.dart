@@ -1,38 +1,36 @@
 import 'package:diario/database/database_helper.dart';
 import 'package:diario/model/anotacao_model.dart';
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 
 class AnotacaoController {
-  DatabaseHelper dbHelper = DatabaseHelper();
-  void adicionarAnotacao(AnotacaoModel novaAnotacao) {
-    try {
-      dbHelper.inserirAnotacao(novaAnotacao);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+  final DatabaseHelper _databaseHelper = DatabaseHelper();
+  dynamic resultado;
+
+  Future<String> adicionarAnotacao(AnotacaoModel novaAnotacao) async {
+    resultado = await _databaseHelper.inserirAnotacao(novaAnotacao);
+    return resultado;
   }
 
-  void atualizarAnotacao(String dataAnotacao, AnotacaoModel anotacao) {
-    try {
-      dbHelper.atualizarAnotacao(dataAnotacao, anotacao);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+  Future<String> atualizarAnotacao(
+      String dataAnotacao, AnotacaoModel anotacao) async {
+    resultado = await _databaseHelper.atualizarAnotacao(dataAnotacao, anotacao);
+    return resultado;
   }
 
-  void excluirAnotacao(String dataAnotacao) {
-    try {
-      dbHelper.deletarAnotacao(dataAnotacao);
-    } catch (e) {
-      debugPrint(e.toString());
-    }
+  Future<String> excluirAnotacao(String dataAnotacao) async {
+    resultado = await _databaseHelper.deletarAnotacao(dataAnotacao);
+    return resultado;
   }
 
-  void visualizarAnotacao(String dataAnotacao) {
+  Future<List<Map<String, dynamic>>> visualizarAnotacao(
+      String dataAnotacao) async {
     try {
-      dbHelper.buscarAnotacao(dataAnotacao);
+      List<Map<String, dynamic>> result =
+          await _databaseHelper.buscarAnotacao(dataAnotacao);
+      return result;
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint('Erro ao buscar anotações: $e');
+      return [];
     }
   }
 }
