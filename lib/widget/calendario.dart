@@ -2,6 +2,7 @@ import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/screens/registro_anotacao_page.dart';
 import 'package:flutter/material.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:intl/intl.dart';
 
 class Calendario extends StatefulWidget {
   final double? height;
@@ -92,18 +93,23 @@ class _CalendarioState extends State<Calendario> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
+          String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDay!);
+          debugPrint('Formatted Date: $formattedDate');
 
-          List<Map<String, dynamic>> resultado = await _anotacaoController
-              .visualizarAnotacao(_selectedDay.toString());
+          List<Map<String, dynamic>> resultado =
+              await _anotacaoController.visualizarAnotacao(formattedDate);
+
           debugPrint('Resultado: $resultado');
 
           if (resultado.isEmpty) {
+            debugPrint("1");
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (BuildContext context) => const RegistroAnotacaoPage(),
               ),
             );
           } else {
+            debugPrint("2");
             widget.onDateSelected(resultado);
           }
         },

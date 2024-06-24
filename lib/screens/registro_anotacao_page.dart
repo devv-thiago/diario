@@ -1,6 +1,7 @@
 import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
   const RegistroAnotacaoPage({super.key});
@@ -91,6 +92,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
+                    onSaved: (_) => _salvarAnotacao(),
                     controller: _conteudoController,
                     style: TextStyle(
                       fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
@@ -106,22 +108,20 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 ),
               ),
             ),
-            ElevatedButton(
-                onPressed: () async {
-                  resultado = await anotacaoController
-                      .adicionarAnotacao(AnotacaoModel(
-                          dataAnotacao: DateTime.now().toString(),
-                          conteudo: _conteudoController.toString()))
-                      .whenComplete(() {
-                    if (resultado == "Anotação cadastrada com sucesso") {
-                      Navigator.of(context).pop();
-                    }
-                  });
-                },
-                child: const Text("Salvar"))
           ],
         ),
       ),
+    );
+  }
+
+  void _salvarAnotacao() async {
+    String formattedDate =
+        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+
+    resultado = await anotacaoController.adicionarAnotacao(
+      AnotacaoModel(
+          dataAnotacao: formattedDate,
+          conteudo: _conteudoController.toString()),
     );
   }
 }

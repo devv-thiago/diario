@@ -4,7 +4,7 @@ import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:diario/screens/homepage.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
   DatabaseHelper.initDatabase();
   initializeDateFormatting().then((_) => runApp(const MyApp()));

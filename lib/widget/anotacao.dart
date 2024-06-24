@@ -31,7 +31,6 @@ class Anotacao extends StatelessWidget {
                   margin:
                       const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                   child: ListTile(
-                    title: Text(anotacoes[index]['titulo'] ?? 'Sem título'),
                     subtitle:
                         Text(anotacoes[index]['descricao'] ?? 'Sem descrição'),
                   ),

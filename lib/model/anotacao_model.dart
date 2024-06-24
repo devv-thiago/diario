@@ -1,16 +1,27 @@
 class AnotacaoModel {
-  String conteudo, caminhoImagem, dataAnotacao;
+  String conteudo;
+  String caminhoImagem;
+  String dataAnotacao; // Mantendo como String
 
-  AnotacaoModel(
-      {required this.dataAnotacao,
-      required this.conteudo,
-      this.caminhoImagem = ""});
+  AnotacaoModel({
+    required this.dataAnotacao,
+    required this.conteudo,
+    this.caminhoImagem = "",
+  });
 
-  factory AnotacaoModel.fromList(List<Map<String, dynamic>> lista) {
+  factory AnotacaoModel.fromMap(Map<String, dynamic> map) {
     return AnotacaoModel(
-      dataAnotacao: lista[0]["dataAnotacao"],
-      conteudo: lista[0]["conteudo"],
-      caminhoImagem: lista[0]["caminhoImagem"],
+      dataAnotacao: map["dataAnotacao"],
+      conteudo: map["conteudo"],
+      caminhoImagem: map["caminhoImagem"],
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      "dataAnotacao": dataAnotacao,
+      "conteudo": conteudo,
+      "caminhoImagem": caminhoImagem,
+    };
   }
 }
