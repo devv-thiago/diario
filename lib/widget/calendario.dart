@@ -1,18 +1,15 @@
-import 'package:diario/controller/anotacao_controller.dart';
-import 'package:diario/screens/registro_anotacao_page.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:table_calendar/table_calendar.dart';
 import 'package:intl/intl.dart';
 
 class Calendario extends StatefulWidget {
   final double? height;
   final double? width;
-  final Function(List<Map<String, dynamic>>) onDateSelected;
 
   const Calendario({
     this.height = 0,
     this.width = 0,
-    required this.onDateSelected,
     super.key,
   });
 
@@ -23,7 +20,11 @@ class Calendario extends StatefulWidget {
 class _CalendarioState extends State<Calendario> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
-  final AnotacaoController _anotacaoController = AnotacaoController();
+
+  String capitalizeMonth(DateTime date) {
+    String month = DateFormat.MMMM('pt_BR').format(date);
+    return month[0].toUpperCase() + month.substring(1);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,48 +40,62 @@ class _CalendarioState extends State<Calendario> {
         calendarFormat: CalendarFormat.month,
         daysOfWeekHeight: 25.0,
         rowHeight: 40.0,
-        headerStyle: const HeaderStyle(
+        headerStyle: HeaderStyle(
           headerPadding:
-              EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
+              const EdgeInsets.only(top: 10, bottom: 10, left: 15, right: 15),
           leftChevronVisible: false,
           rightChevronVisible: false,
           formatButtonVisible: false,
-          titleTextStyle: TextStyle(
+          titleTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 23,
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
           ),
+          titleTextFormatter: (date, locale) => capitalizeMonth(date),
         ),
-        calendarStyle: const CalendarStyle(
-          tablePadding: EdgeInsets.only(left: 10, right: 10),
+        calendarStyle: CalendarStyle(
+          tablePadding: const EdgeInsets.only(left: 10, right: 10),
           outsideDaysVisible: false,
-          selectedDecoration: BoxDecoration(
+          selectedDecoration: const BoxDecoration(
             color: Color.fromRGBO(255, 124, 147, 1),
             shape: BoxShape.circle,
           ),
-          defaultTextStyle: TextStyle(
+          defaultTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 17,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          holidayTextStyle: TextStyle(
+          holidayTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 17,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          weekendTextStyle: TextStyle(
+          weekendTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 17,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          todayTextStyle: TextStyle(
+          todayTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 17,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          todayDecoration: BoxDecoration(
+          todayDecoration: const BoxDecoration(
             color: Colors.transparent,
             shape: BoxShape.circle,
           ),
         ),
-        daysOfWeekStyle: const DaysOfWeekStyle(
-          weekdayStyle: TextStyle(color: Colors.white, fontSize: 15),
-          weekendStyle: TextStyle(color: Colors.white, fontSize: 15),
+        daysOfWeekStyle: DaysOfWeekStyle(
+          weekdayStyle: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
+          weekendStyle: GoogleFonts.poppins(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
         ),
         firstDay: DateTime.utc(2020, 1, 1),
         lastDay: DateTime.utc(2030, 12, 31),
@@ -93,25 +108,6 @@ class _CalendarioState extends State<Calendario> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
-          String formattedDate = DateFormat('yyyy-MM-dd').format(_selectedDay!);
-          debugPrint('Formatted Date: $formattedDate');
-
-          List<Map<String, dynamic>> resultado =
-              await _anotacaoController.visualizarAnotacao(formattedDate);
-
-          debugPrint('Resultado: $resultado');
-
-          if (resultado.isEmpty) {
-            debugPrint("1");
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (BuildContext context) => const RegistroAnotacaoPage(),
-              ),
-            );
-          } else {
-            debugPrint("2");
-            widget.onDateSelected(resultado);
-          }
         },
       ),
     );

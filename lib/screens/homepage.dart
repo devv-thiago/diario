@@ -10,21 +10,15 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  List<Map<String, dynamic>> _anotacoes = [];
-
-  void _updateAnotacoes(List<Map<String, dynamic>> anotacoes) {
-    setState(() {
-      _anotacoes = anotacoes;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     MediaQueryData deviceSize = MediaQuery.of(context);
     return Scaffold(
       body: Container(
         padding: const EdgeInsets.all(10),
-        decoration: const BoxDecoration(color: Colors.white),
+        decoration: const BoxDecoration(
+          color: Color.fromRGBO(246, 246, 246, 1),
+        ),
         height: deviceSize.size.height,
         width: deviceSize.size.width,
         child: Column(
@@ -33,16 +27,11 @@ class _HomepageState extends State<Homepage> {
             Calendario(
               height: deviceSize.size.height * 0.4,
               width: deviceSize.size.width * 0.95,
-              onDateSelected: (anotacoes) {
-                _updateAnotacoes(anotacoes);
-              },
             ),
-            if (_anotacoes.isNotEmpty)
-              Anotacao(
-                height: deviceSize.size.height * 0.5,
-                width: deviceSize.size.width * 0.95,
-                anotacoes: _anotacoes,
-              ),
+            Anotacao(
+              height: deviceSize.size.height * 0.5,
+              width: deviceSize.size.width * 0.95,
+            ),
           ],
         ),
       ),
