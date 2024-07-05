@@ -2,9 +2,10 @@ import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
-  const RegistroAnotacaoPage({super.key});
+  const RegistroAnotacaoPage({Key? key}) : super(key: key);
 
   @override
   State<RegistroAnotacaoPage> createState() => _RegistroAnotacaoPageState();
@@ -13,7 +14,6 @@ class RegistroAnotacaoPage extends StatefulWidget {
 class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   late TextAlign _selectedAlign;
   bool _isBold = false;
-  final AnotacaoController anotacaoController = AnotacaoController();
   late TextEditingController _conteudoController;
   dynamic resultado;
 
@@ -26,7 +26,10 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
 
   @override
   Widget build(BuildContext context) {
+    final anotacaoController =
+        Provider.of<AnotacaoController>(context, listen: false);
     MediaQueryData deviceInfo = MediaQuery.of(context);
+
     return Scaffold(
       backgroundColor: const Color.fromRGBO(251, 246, 246, 1),
       body: Padding(
@@ -80,7 +83,6 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                   BoxShadow(
                     color: Colors.black12,
                     offset: Offset(8, 10),
-                    blurStyle: BlurStyle.normal,
                     blurRadius: 10,
                   )
                 ],
@@ -92,7 +94,6 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 child: Padding(
                   padding: const EdgeInsets.all(10),
                   child: TextFormField(
-                    onSaved: (_) => _salvarAnotacao(),
                     controller: _conteudoController,
                     style: TextStyle(
                       fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
@@ -108,20 +109,26 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 ),
               ),
             ),
+            ElevatedButton(
+              onPressed: () => _salvarAnotacao(anotacaoController),
+              child: const Text('Salvar Anotação'),
+            ),
           ],
         ),
       ),
     );
   }
 
-  void _salvarAnotacao() async {
-    String formattedDate =
-        DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
+  void _salvarAnotacao(AnotacaoController anotacaoController) async {
+    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
 
     resultado = await anotacaoController.adicionarAnotacao(
       AnotacaoModel(
-          dataAnotacao: formattedDate,
-          conteudo: _conteudoController.toString()),
+        dataAnotacao: DateTime.parse(formattedDate),
+        conteudo: _conteudoController.text,
+      ),
     );
+
+    Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
   }
 }

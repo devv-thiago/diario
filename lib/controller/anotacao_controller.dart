@@ -2,35 +2,56 @@ import 'package:diario/database/database_helper.dart';
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 
-class AnotacaoController {
+class AnotacaoController extends ChangeNotifier {
   final DatabaseHelper _databaseHelper = DatabaseHelper();
+  List<AnotacaoModel> _anotacoes = [];
+
+  List<AnotacaoModel> get anotacoes => _anotacoes;
+
   dynamic resultado;
 
   Future<String> adicionarAnotacao(AnotacaoModel novaAnotacao) async {
     resultado = await _databaseHelper.inserirAnotacao(novaAnotacao);
+    _anotacoes.add(novaAnotacao); // Adiciona a nova anotação localmente
+    notifyListeners();
     return resultado;
   }
 
   Future<String> atualizarAnotacao(
       String dataAnotacao, AnotacaoModel anotacao) async {
     resultado = await _databaseHelper.atualizarAnotacao(dataAnotacao, anotacao);
+    notifyListeners();
     return resultado;
   }
 
   Future<String> excluirAnotacao(String dataAnotacao) async {
     resultado = await _databaseHelper.deletarAnotacao(dataAnotacao);
+    notifyListeners();
     return resultado;
   }
 
-  Future<List<Map<String, dynamic>>> visualizarAnotacao(
-      String dataAnotacao) async {
+  Future<void> visualizarAnotacoes() async {
     try {
-      List<Map<String, dynamic>> result =
-          await _databaseHelper.buscarAnotacao(dataAnotacao);
-      return result;
+      _anotacoes = await _databaseHelper.buscarAnotacoes();
+      notifyListeners();
     } catch (e) {
       debugPrint('Erro ao buscar anotações: $e');
-      return [];
+      _anotacoes = [];
+      notifyListeners();
     }
+  }
+
+  AnotacaoModel? retornaAnotacaoDia(DateTime day) {
+    if (_anotacoes.isEmpty) {
+      visualizarAnotacoes();
+    }
+
+    for (var anotacao in _anotacoes) {
+      if (anotacao.dataAnotacao == day) {
+        return anotacao;
+      }
+    }
+
+    return null;
   }
 }

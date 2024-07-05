@@ -6,10 +6,12 @@ import 'package:intl/intl.dart';
 class Calendario extends StatefulWidget {
   final double? height;
   final double? width;
+  final Function(DateTime)? onDaySelected;
 
   const Calendario({
     this.height = 0,
     this.width = 0,
+    this.onDaySelected,
     super.key,
   });
 
@@ -108,8 +110,18 @@ class _CalendarioState extends State<Calendario> {
             _selectedDay = selectedDay;
             _focusedDay = focusedDay;
           });
+
+          if (widget.onDaySelected != null) {
+            widget.onDaySelected!(selectedDay);
+          }
         },
       ),
     );
+  }
+
+  bool isSameDay(DateTime? date1, DateTime date2) {
+    return date1?.year == date2.year &&
+        date1?.month == date2.month &&
+        date1?.day == date2.day;
   }
 }

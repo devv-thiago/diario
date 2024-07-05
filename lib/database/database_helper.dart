@@ -74,11 +74,13 @@ class DatabaseHelper {
     }
   }
 
-  Future<List<Map<String, dynamic>>> buscarAnotacao(String dataAnotacao) async {
+  Future<List<AnotacaoModel>> buscarAnotacoes() async {
     try {
-      List<Map<String, dynamic>> result = await database.rawQuery(
-          "SELECT * FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
-      return result;
+      final List<Map<String, dynamic>> maps =
+          await database.rawQuery("SELECT * FROM Anotacoes");
+      return List.generate(maps.length, (i) {
+        return AnotacaoModel.fromMap(maps[i]);
+      });
     } catch (e) {
       return [];
     }

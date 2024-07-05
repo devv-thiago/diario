@@ -1,7 +1,9 @@
+import 'package:intl/intl.dart';
+
 class AnotacaoModel {
   String conteudo;
   String caminhoImagem;
-  String dataAnotacao; // Mantendo como String
+  DateTime dataAnotacao; // Alterado para DateTime
 
   AnotacaoModel({
     required this.dataAnotacao,
@@ -11,7 +13,8 @@ class AnotacaoModel {
 
   factory AnotacaoModel.fromMap(Map<String, dynamic> map) {
     return AnotacaoModel(
-      dataAnotacao: map["dataAnotacao"],
+      dataAnotacao: DateTime.parse(
+          map["dataAnotacao"]), // Convertendo de String para DateTime
       conteudo: map["conteudo"],
       caminhoImagem: map["caminhoImagem"],
     );
@@ -19,7 +22,8 @@ class AnotacaoModel {
 
   Map<String, dynamic> toMap() {
     return {
-      "dataAnotacao": dataAnotacao,
+      "dataAnotacao": DateFormat('yyyy-MM-dd').format(
+          dataAnotacao), // Convertendo de DateTime para String no formato desejado
       "conteudo": conteudo,
       "caminhoImagem": caminhoImagem,
     };
