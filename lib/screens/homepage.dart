@@ -13,17 +13,16 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  late AnotacaoController _anotacaoController;
+  
 
   @override
   void initState() {
     super.initState();
-    _anotacaoController =
-        Provider.of<AnotacaoController>(context, listen: false);
   }
 
   @override
   Widget build(BuildContext context) {
+    AnotacaoController _anotacaoController = Provider.of<AnotacaoController>(context);
     MediaQueryData deviceSize = MediaQuery.of(context);
     return Scaffold(
       body: Container(

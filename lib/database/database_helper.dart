@@ -21,7 +21,6 @@ class DatabaseHelper {
           );
         ''');
       });
-      debugPrint("Banco criado com sucesso");
     } catch (e) {
       debugPrint(e.toString());
     }
