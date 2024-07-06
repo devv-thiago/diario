@@ -1,4 +1,3 @@
-import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 import 'package:diario/widget/anotacao.dart';
 import 'package:diario/widget/calendario.dart';
@@ -13,20 +12,17 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  DateTime? selectedDay;
 
   @override
   Widget build(BuildContext context) {
-    AnotacaoController _anotacaoController = Provider.of<AnotacaoController>(context);
+    AnotacaoController anotacaoController =
+        Provider.of<AnotacaoController>(context, listen: false);
     MediaQueryData deviceSize = MediaQuery.of(context);
+
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.all(10),
+        padding: const EdgeInsets.only(right: 15, left: 15, top: 40),
         decoration: const BoxDecoration(
           color: Color.fromRGBO(246, 246, 246, 1),
         ),
@@ -38,17 +34,20 @@ class _HomepageState extends State<Homepage> {
             Calendario(
               height: deviceSize.size.height * 0.4,
               width: deviceSize.size.width * 0.95,
-              onDaySelected: (selectedDay) {
-                AnotacaoModel? anotacao =
-                    _anotacaoController.retornaAnotacaoDia(selectedDay);
-                setState(() {});
+              onDaySelected: (day) {
+                setState(() {
+                  selectedDay = day;
+                  print(
+                      'Homepage - Selected day: $selectedDay'); // Log para verificar o dia selecionado
+                });
               },
             ),
             Expanded(
               child: Anotacao(
-                height: deviceSize.size.height * 0.5,
+                height: deviceSize.size.height * 0.7,
                 width: deviceSize.size.width * 0.95,
-                anotacoes: _anotacaoController.anotacoes,
+                anotacoes: anotacaoController.anotacoes,
+                selectedDay: selectedDay ?? DateTime.now(),
               ),
             ),
           ],

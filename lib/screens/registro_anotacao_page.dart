@@ -1,11 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/model/anotacao_model.dart';
-import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
-import 'package:provider/provider.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
-  const RegistroAnotacaoPage({Key? key}) : super(key: key);
+  final DateTime selectedDay;
+
+  const RegistroAnotacaoPage({super.key, required this.selectedDay});
 
   @override
   State<RegistroAnotacaoPage> createState() => _RegistroAnotacaoPageState();
@@ -26,8 +27,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
 
   @override
   Widget build(BuildContext context) {
-    final anotacaoController =
-        Provider.of<AnotacaoController>(context, listen: false);
+    final anotacaoController = Provider.of<AnotacaoController>(context);
     MediaQueryData deviceInfo = MediaQuery.of(context);
 
     return Scaffold(
@@ -120,15 +120,20 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   }
 
   void _salvarAnotacao(AnotacaoController anotacaoController) async {
-    String formattedDate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+    try {
+      resultado = await anotacaoController.adicionarAnotacao(
+        AnotacaoModel(
+          dataAnotacao:
+              widget.selectedDay, // Usando a data selecionada pelo usuário
+          conteudo: _conteudoController.text,
+        ),
+      );
+      debugPrint('Resultado do salvamento: $resultado');
 
-    resultado = await anotacaoController.adicionarAnotacao(
-      AnotacaoModel(
-        dataAnotacao: DateTime.parse(formattedDate),
-        conteudo: _conteudoController.text,
-      ),
-    );
-
-    Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
+      Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
+    } catch (e) {
+      debugPrint('Erro ao salvar anotação: $e');
+      // Implemente o tratamento de erro conforme necessário
+    }
   }
 }

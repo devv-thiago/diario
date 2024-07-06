@@ -1,29 +1,52 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:diario/model/anotacao_model.dart';
-import 'package:diario/screens/registro_anotacao_page.dart'; // Importe a tela de cadastro de anotação aqui
+import 'package:diario/screens/registro_anotacao_page.dart';
 
+// ignore: must_be_immutable
 class Anotacao extends StatelessWidget {
   final double height;
   final double width;
-  final List<AnotacaoModel> anotacoes;
+  List<AnotacaoModel> anotacoes;
+  DateTime selectedDay;
 
-  const Anotacao({
+  Anotacao({
     required this.height,
     required this.width,
+    required this.selectedDay,
     required this.anotacoes,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    if (anotacoes.isEmpty) {
+    // Filtra a anotação para o dia selecionado
+    final anotacaoFiltrada = anotacoes.firstWhere(
+      (anotacao) =>
+          anotacao.dataAnotacao.year == selectedDay.year &&
+          anotacao.dataAnotacao.month == selectedDay.month &&
+          anotacao.dataAnotacao.day == selectedDay.day,
+      orElse: () => AnotacaoModel(conteudo: '', dataAnotacao: selectedDay),
+    );
+
+    // Verifica se há uma anotação para o dia selecionado
+    bool hasAnotacao = anotacaoFiltrada.conteudo.isNotEmpty;
+
+    // Formata a data e o dia da semana
+    final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
+    final String formattedDate =
+        dateFormat.format(anotacaoFiltrada.dataAnotacao);
+    final String dayOfWeek =
+        DateFormat('EEEE', 'pt_BR').format(anotacaoFiltrada.dataAnotacao);
+
+    if (!hasAnotacao) {
       return GestureDetector(
         onTap: () {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => const RegistroAnotacaoPage(),
+              builder: (context) => RegistroAnotacaoPage(selectedDay: selectedDay,),
             ),
           );
         },
@@ -52,27 +75,54 @@ class Anotacao extends StatelessWidget {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.only(
+                  left: 15, right: 15, bottom: 10, top: 10),
               alignment: Alignment.centerLeft,
-              child: const Text(
-                "Meus Dias",
-                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              child: Text(
+                "Meus dias",
+                style: GoogleFonts.poppins(
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-            Expanded(
+            SizedBox(
+              height: height * 0.5,
+              width: width,
               child: Card(
+                elevation: 10,
                 color: const Color.fromRGBO(255, 255, 255, 1),
                 margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-                child: ListView.builder(
-                  itemCount: anotacoes.length,
-                  itemBuilder: (context, index) {
-                    return ListTile(
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ListTile(
                       title: Text(
-                        anotacoes[index].conteudo,
-                        style: GoogleFonts.poppins(),
+                        dayOfWeek,
+                        style: GoogleFonts.poppins(
+                          fontSize: 25,
+                          fontWeight: FontWeight.bold,
+                        ),
                       ),
-                    );
-                  },
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            formattedDate,
+                            style: GoogleFonts.poppins(fontSize: 20),
+                          ),
+                          const SizedBox(height: 8.0),
+                          SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Text(
+                              anotacaoFiltrada.conteudo,
+                              style: GoogleFonts.poppins(fontSize: 20),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

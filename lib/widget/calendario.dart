@@ -12,8 +12,8 @@ class Calendario extends StatefulWidget {
     this.height = 0,
     this.width = 0,
     this.onDaySelected,
-    super.key,
-  });
+    Key? key,
+  }) : super(key: key);
 
   @override
   _CalendarioState createState() => _CalendarioState();
@@ -100,10 +100,10 @@ class _CalendarioState extends State<Calendario> {
           ),
         ),
         firstDay: DateTime.utc(2020, 1, 1),
-        lastDay: DateTime.utc(2030, 12, 31),
+        lastDay: DateTime.utc(2099, 12, 31),
         focusedDay: _focusedDay,
         selectedDayPredicate: (day) {
-          return isSameDay(_selectedDay, day);
+          return _selectedDay == day;
         },
         onDaySelected: (selectedDay, focusedDay) async {
           setState(() {
@@ -117,11 +117,5 @@ class _CalendarioState extends State<Calendario> {
         },
       ),
     );
-  }
-
-  bool isSameDay(DateTime? date1, DateTime date2) {
-    return date1?.year == date2.year &&
-        date1?.month == date2.month &&
-        date1?.day == date2.day;
   }
 }

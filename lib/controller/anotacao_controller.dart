@@ -12,7 +12,7 @@ class AnotacaoController extends ChangeNotifier {
 
   Future<String> adicionarAnotacao(AnotacaoModel novaAnotacao) async {
     resultado = await _databaseHelper.inserirAnotacao(novaAnotacao);
-    _anotacoes.add(novaAnotacao); // Adiciona a nova anotação localmente
+    _anotacoes.add(novaAnotacao);
     notifyListeners();
     return resultado;
   }
@@ -51,7 +51,6 @@ class AnotacaoController extends ChangeNotifier {
         return anotacao;
       }
     }
-
     return null;
   }
 }

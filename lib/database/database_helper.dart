@@ -10,7 +10,7 @@ class DatabaseHelper {
 
   static Future initDatabase() async {
     try {
-      database = await openDatabase(
+      database = await  openDatabase(
           join(await getDatabasesPath(), 'database.db'),
           version: 1, onCreate: (Database db, int version) async {
         await db.execute('''
