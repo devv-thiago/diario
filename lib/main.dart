@@ -6,9 +6,9 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:diario/screens/homepage.dart';
 import 'package:provider/provider.dart';
 
-void main() async {
+void main() {
   WidgetsFlutterBinding.ensureInitialized();
-  await DatabaseHelper.initDatabase();
+  DatabaseHelper.initDatabase();
   initializeDateFormatting().then(
     (_) => runApp(
       ChangeNotifierProvider(

@@ -4,32 +4,39 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static late final Database database;
+  static late Database database;
 
   DatabaseHelper();
 
-  static Future initDatabase() async {
+  static Future<void> initDatabase() async {
     try {
-      database = await  openDatabase(
-          join(await getDatabasesPath(), 'database.db'),
-          version: 1, onCreate: (Database db, int version) async {
-        await db.execute('''
-          CREATE TABLE Anotacoes ( 
-            dataAnotacao TEXT PRIMARY KEY, 
-            conteudo TEXT NOT NULL,
-            caminhoImagem TEXT NOT NULL
-          );
-        ''');
-      });
+      database = await openDatabase(
+        join(await getDatabasesPath(), 'database.db'),
+        version: 1,
+        onCreate: (Database db, int version) async {
+          await db.execute('''
+            CREATE TABLE Anotacoes ( 
+              dataAnotacao TEXT PRIMARY KEY, 
+              conteudo TEXT NOT NULL,
+              caminhoImagem TEXT NOT NULL
+            );
+          ''');
+        },
+        onOpen: (Database db) async {
+          debugPrint("Banco de dados aberto com sucesso");
+        },
+      );
     } catch (e) {
-      debugPrint(e.toString());
+      debugPrint("Erro ao abrir o banco de dados: ${e.toString()}");
     }
   }
 
   Future<String> deletarAnotacao(String dataAnotacao) async {
     try {
       await database.rawDelete(
-          "DELETE FROM Anotacoes WHERE dataAnotacao = ?", [dataAnotacao]);
+        "DELETE FROM Anotacoes WHERE dataAnotacao = ?",
+        [dataAnotacao],
+      );
       return "Anotação deletada";
     } catch (e) {
       return "Anotação não deletada, erro: ${e.toString()}";
@@ -44,7 +51,7 @@ class DatabaseHelper {
       ''', [
         novaAnotacao.dataAnotacao.toString(),
         novaAnotacao.conteudo,
-        novaAnotacao.caminhoImagem
+        novaAnotacao.caminhoImagem,
       ]);
       return "Anotação cadastrada com sucesso";
     } catch (e) {
@@ -53,7 +60,9 @@ class DatabaseHelper {
   }
 
   Future<String> atualizarAnotacao(
-      String dataAnotacao, AnotacaoModel anotacao) async {
+    String dataAnotacao,
+    AnotacaoModel anotacao,
+  ) async {
     try {
       await database.rawUpdate('''
         UPDATE Anotacoes SET 
@@ -65,7 +74,7 @@ class DatabaseHelper {
         anotacao.dataAnotacao.toString(),
         anotacao.conteudo,
         anotacao.caminhoImagem,
-        dataAnotacao
+        dataAnotacao,
       ]);
       return "Anotação atualizada com sucesso";
     } catch (e) {
