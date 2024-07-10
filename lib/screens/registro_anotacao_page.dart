@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:diario/controller/anotacao_controller.dart';
 import 'package:diario/model/anotacao_model.dart';
@@ -38,6 +39,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
                   onPressed: () {
@@ -45,7 +47,10 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       _selectedAlign = TextAlign.left;
                     });
                   },
-                  icon: const Icon(Icons.format_align_left),
+                  icon: const Icon(
+                    Icons.format_align_left,
+                    size: 35,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
@@ -53,7 +58,10 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       _selectedAlign = TextAlign.center;
                     });
                   },
-                  icon: const Icon(Icons.format_align_justify),
+                  icon: const Icon(
+                    Icons.format_align_justify,
+                    size: 35,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
@@ -61,7 +69,10 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       _selectedAlign = TextAlign.right;
                     });
                   },
-                  icon: const Icon(Icons.format_align_right),
+                  icon: const Icon(
+                    Icons.format_align_right,
+                    size: 35,
+                  ),
                 ),
                 IconButton(
                   onPressed: () {
@@ -69,7 +80,21 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       _isBold = !_isBold;
                     });
                   },
-                  icon: const Icon(Icons.format_bold_rounded),
+                  icon: const Icon(
+                    Icons.format_bold_rounded,
+                    size: 35,
+                  ),
+                ),
+                IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isBold = !_isBold;
+                    });
+                  },
+                  icon: const Icon(
+                    Icons.photo_library_rounded,
+                    size: 35,
+                  ),
                 ),
               ],
             ),
@@ -109,9 +134,24 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                 ),
               ),
             ),
+            const SizedBox(
+              height: 40,
+            ),
             ElevatedButton(
+              style: ButtonStyle(
+                backgroundColor: WidgetStateProperty.all(
+                    const Color.fromRGBO(255, 112, 137, 1)),
+                elevation: WidgetStateProperty.all(10),
+              ),
               onPressed: () => _salvarAnotacao(anotacaoController),
-              child: const Text('Salvar Anotação'),
+              child: Text(
+                'Salvar Anotação',
+                style: GoogleFonts.poppins(
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
             ),
           ],
         ),

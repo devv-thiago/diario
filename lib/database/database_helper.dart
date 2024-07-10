@@ -4,7 +4,7 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static late final DatabaseHelper _instance = DatabaseHelper._internal();
+  static final DatabaseHelper _instance = DatabaseHelper._internal();
 
   late Database database;
 
