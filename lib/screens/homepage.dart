@@ -37,8 +37,6 @@ class _HomepageState extends State<Homepage> {
               onDaySelected: (day) {
                 setState(() {
                   selectedDay = day;
-                  print(
-                      'Homepage - Selected day: $selectedDay'); // Log para verificar o dia selecionado
                 });
               },
             ),

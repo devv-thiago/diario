@@ -4,11 +4,17 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
 class DatabaseHelper {
-  static late Database database;
+  static late final DatabaseHelper _instance = DatabaseHelper._internal();
 
-  DatabaseHelper();
+  late Database database;
 
-  static Future<void> initDatabase() async {
+  factory DatabaseHelper() {
+    return _instance;
+  }
+
+  DatabaseHelper._internal();
+
+  Future<void> initDatabase() async {
     try {
       database = await openDatabase(
         join(await getDatabasesPath(), 'database.db'),

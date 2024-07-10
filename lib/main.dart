@@ -6,15 +6,14 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:diario/screens/homepage.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  DatabaseHelper.initDatabase();
-  initializeDateFormatting().then(
-    (_) => runApp(
-      ChangeNotifierProvider(
-        create: (context) => AnotacaoController(),
-        child: const MyApp(),
-      ),
+  await DatabaseHelper().initDatabase();
+  await initializeDateFormatting();
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => AnotacaoController(),
+      child: const MyApp(),
     ),
   );
 }
