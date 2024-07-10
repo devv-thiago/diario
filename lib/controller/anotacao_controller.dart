@@ -1,4 +1,4 @@
-import 'package:diario/database/database_helper.dart';
+import 'package:diario/services/database_helper.dart';
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/material.dart';
 

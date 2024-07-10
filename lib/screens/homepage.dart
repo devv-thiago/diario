@@ -1,3 +1,4 @@
+import 'package:diario/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:diario/widget/anotacao.dart';
 import 'package:diario/widget/calendario.dart';
@@ -14,6 +15,12 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   DateTime? selectedDay;
 
+    @override
+  void dispose() {
+    DatabaseHelper.instance.close(); // Fechar o banco de dados quando o widget for destruído
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     AnotacaoController anotacaoController =
@@ -22,7 +29,7 @@ class _HomepageState extends State<Homepage> {
 
     return Scaffold(
       body: Container(
-        padding: const EdgeInsets.only(right: 15, left: 15, top: 40),
+        padding: const EdgeInsets.only(right: 20, left: 20, top: 40),
         decoration: const BoxDecoration(
           color: Color.fromRGBO(246, 246, 246, 1),
         ),
