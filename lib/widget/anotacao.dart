@@ -46,7 +46,9 @@ class Anotacao extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => RegistroAnotacaoPage(selectedDay: selectedDay,),
+              builder: (context) => RegistroAnotacaoPage(
+                selectedDay: selectedDay,
+              ),
             ),
           );
         },
@@ -97,6 +99,19 @@ class Anotacao extends StatelessWidget {
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: ListTile(
+                      trailing: IconButton(
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => RegistroAnotacaoPage(
+                                selectedDay: selectedDay,
+                              ),
+                            ),
+                          );
+                        },
+                        icon: const Icon(Icons.edit_square),
+                      ),
                       title: Text(
                         dayOfWeek,
                         style: GoogleFonts.poppins(

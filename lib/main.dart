@@ -8,12 +8,11 @@ import 'package:provider/provider.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
-  // Inicialize o banco de dados
-  await DatabaseHelper.instance.database;
-  
+
   await initializeDateFormatting();
-  
+
+  DatabaseHelper.instance.database;
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => AnotacaoController(),
