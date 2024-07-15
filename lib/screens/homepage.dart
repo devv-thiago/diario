@@ -14,10 +14,17 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   DateTime? selectedDay;
+  late DatabaseHelper _databaseHelper;
 
-    @override
+  @override
+  void initState() {
+    super.initState();
+    _databaseHelper = DatabaseHelper();
+  }
+
+  @override
   void dispose() {
-    DatabaseHelper.instance.close(); // Fechar o banco de dados quando o widget for destruído
+    _databaseHelper.database.then((db) => db.close()); // Fechar o banco de dados quando o widget for destruído
     super.dispose();
   }
 
