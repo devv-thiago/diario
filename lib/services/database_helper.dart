@@ -1,24 +1,24 @@
 import 'package:diario/model/anotacao_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:path/path.dart';
-import 'package:sqflite/sqflite.dart';
+
 
 class DatabaseHelper {
   static Database? _database;
 
   DatabaseHelper();
 
-  Future<Database> get database async {
+  Future get database async {
     if (_database != null) return _database!;
     _database = await _initDB('anotacoes.db');
     return _database!;
   }
 
-  Future<Database> _initDB(String filePath) async {
+  Future _initDB(String filePath) async {
     final dbPath = await getDatabasesPath();
     final path = join(dbPath, filePath);
 
-    return await openDatabase(
+    _database = await openDatabase(
       path,
       version: 1,
       onCreate: (db, version) async {
