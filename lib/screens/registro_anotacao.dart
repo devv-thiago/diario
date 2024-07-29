@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:diario/controller/anotacao_controller.dart';
-import 'package:diario/model/anotacao_model.dart';
+import 'package:diario/controller/anotacao.dart';
+import 'package:diario/model/anotacao.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
   final DateTime selectedDay;
@@ -143,7 +143,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                     const Color.fromRGBO(255, 112, 137, 1)),
                 elevation: WidgetStateProperty.all(10),
               ),
-              onPressed: () => _salvarAnotacao(anotacaoController),
+              onPressed: () {}, //_salvarAnotacao(anotacaoController),
               child: Text(
                 'Salvar Anotação',
                 style: GoogleFonts.poppins(
@@ -159,21 +159,21 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
     );
   }
 
-  void _salvarAnotacao(AnotacaoController anotacaoController) async {
-    try {
-      resultado = await anotacaoController.adicionarAnotacao(
-        AnotacaoModel(
-          dataAnotacao:
-              widget.selectedDay, // Usando a data selecionada pelo usuário
-          conteudo: _conteudoController.text,
-        ),
-      );
-      debugPrint('Resultado do salvamento: $resultado');
+  // void _salvarAnotacao(AnotacaoController anotacaoController) async {
+  //   try {
+  //     resultado = await anotacaoController.adicionarAnotacao(
+  //       AnotacaoModel(
+  //         dataAnotacao:
+  //             widget.selectedDay, // Usando a data selecionada pelo usuário
+  //         conteudo: _conteudoController.text,
+  //       ),
+  //     );
+  //     debugPrint('Resultado do salvamento: $resultado');
 
-      Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
-    } catch (e) {
-      debugPrint('Erro ao salvar anotação: $e');
-      // Implemente o tratamento de erro conforme necessário
-    }
-  }
+  //     Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
+  //   } catch (e) {
+  //     debugPrint('Erro ao salvar anotação: $e');
+  //     // Implemente o tratamento de erro conforme necessário
+  //   }
+  // }
 }

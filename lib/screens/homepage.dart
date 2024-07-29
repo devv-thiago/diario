@@ -1,8 +1,7 @@
-import 'package:diario/services/database_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:diario/widget/anotacao.dart';
 import 'package:diario/widget/calendario.dart';
-import 'package:diario/controller/anotacao_controller.dart';
+import 'package:diario/controller/anotacao.dart';
 import 'package:provider/provider.dart';
 
 class Homepage extends StatefulWidget {
@@ -14,19 +13,7 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   DateTime? selectedDay;
-  late DatabaseHelper _databaseHelper;
 
-  @override
-  void initState() {
-    super.initState();
-    _databaseHelper = DatabaseHelper();
-  }
-
-  @override
-  void dispose() {
-    _databaseHelper.database.then((db) => db.close()); // Fechar o banco de dados quando o widget for destruído
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,14 +41,14 @@ class _HomepageState extends State<Homepage> {
                 });
               },
             ),
-            Expanded(
-              child: Anotacao(
-                height: deviceSize.size.height * 0.7,
-                width: deviceSize.size.width * 0.95,
-                anotacoes: anotacaoController.anotacoes,
-                selectedDay: selectedDay ?? DateTime.now(),
-              ),
-            ),
+            // Expanded(
+            //   child: Anotacao(
+            //     height: deviceSize.size.height * 0.7,
+            //     width: deviceSize.size.width * 0.95,
+            //     anotacoes: anotacaoController.anotacoes,
+            //     selectedDay: selectedDay ?? DateTime.now(),
+            //   ),
+            // ),
           ],
         ),
       ),

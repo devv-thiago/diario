@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
-import 'package:diario/model/anotacao_model.dart';
-import 'package:diario/screens/registro_anotacao_page.dart';
+import 'package:diario/model/anotacao.dart';
+import 'package:diario/screens/registro_anotacao.dart';
 
 // ignore: must_be_immutable
 class Anotacao extends StatelessWidget {

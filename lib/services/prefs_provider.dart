@@ -1,10 +1,10 @@
-import 'package:diario/model/anotacao_model.dart';
+import 'package:diario/model/anotacao.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedPrefProvider {
+class SharedProvider {
   late SharedPreferences prefs;
 
-  SharedPrefProvider() {
+  SharedProvider() {
     _initRepo();
   }
 
@@ -44,6 +44,7 @@ class SharedPrefProvider {
         return "Erro $e";
       });
     }
+    return "";
     // se existir chama atualizaValor
     // senão apenas adiciona novo valor
   }
