@@ -1,64 +1,13 @@
 import 'package:diario/model/anotacao.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class SharedProvider {
-  late SharedPreferences prefs;
+abstract class SharedProvider {
+  void initRepo() {}
 
-  SharedProvider() {
-    _initRepo();
-  }
+  void leituraValor(List anotacoes, DateTime dataAnotacao) {}
 
-  void _initRepo() async {
-    try {
-      prefs = await SharedPreferences.getInstance().onError((e, S) {
-        throw Exception("Erro shared prefs: $e");
-      });
-    } catch (e) {
-      throw Exception("Ocorreu um erro no método");
-    }
-  }
+  void escritaValor(DateTime dataAnotacao, AnotacaoModel novaAnotacao) {}
 
-  String leituraValor(List anotacoes, DateTime dataAnotacao) {
-    if (prefs.containsKey(dataAnotacao.toString())) {
-      final anotacaoModel = prefs.getStringList(dataAnotacao.toString());
-      anotacoes.add(anotacaoModel); // adiciona valor na lista do controller
-      return "Anotação encontrada";
-    } else {
-      return "Anotação não encontrada";
-    }
-  }
+  void excluirValor() {}
 
-  String escritaValor(DateTime dataAnotacao, AnotacaoModel novaAnotacao) {
-    if (prefs.containsKey(dataAnotacao.toString())) {
-      String resultadoAtt = atualizarValor();
-      return "Resultado atualização: $resultadoAtt";
-    } else {
-      final anotacaoModel = prefs
-          .setString(
-        dataAnotacao.toString(),
-        "{${novaAnotacao.conteudo},${novaAnotacao.caminhoImagem}}",
-      )
-          .then((result) {
-        return "Resultado $result";
-      }).onError((e, s) {
-        return "Erro $e";
-      });
-    }
-    return "";
-    // se existir chama atualizaValor
-    // senão apenas adiciona novo valor
-  }
-
-  String excluirValor() {
-    // verifica se valor existe
-    // se existir exclui o valor
-    return "";
-  }
-
-  String atualizarValor() {
-    // verifica se valor existe
-    // se existir exclui o valor
-    // após exclusão grava novo valor
-    return "";
-  }
+  void atualizarValor() {}
 }
