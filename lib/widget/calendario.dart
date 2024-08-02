@@ -59,8 +59,16 @@ class _CalendarioState extends State<Calendario> {
           tablePadding: const EdgeInsets.only(left: 10, right: 10),
           outsideDaysVisible: false,
           selectedDecoration: const BoxDecoration(
-            color: Color.fromRGBO(255, 124, 147, 1),
-            shape: BoxShape.circle,
+            color: Colors.transparent,
+            shape: BoxShape.rectangle,
+          ),
+          defaultDecoration: BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.rectangle,
+          ),
+          todayDecoration: const BoxDecoration(
+            color: Colors.transparent,
+            shape: BoxShape.rectangle,
           ),
           defaultTextStyle: GoogleFonts.poppins(
             color: Colors.white,
@@ -81,10 +89,6 @@ class _CalendarioState extends State<Calendario> {
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.bold,
-          ),
-          todayDecoration: const BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.circle,
           ),
         ),
         daysOfWeekStyle: DaysOfWeekStyle(

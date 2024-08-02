@@ -3,11 +3,11 @@ import 'package:diario/model/anotacao.dart';
 abstract class SharedProvider {
   void initRepo() {}
 
-  void leituraValor(List anotacoes, DateTime dataAnotacao) {}
+  void leituraValor(DateTime dataAnotacao) {}
 
-  void escritaValor(DateTime dataAnotacao, AnotacaoModel novaAnotacao) {}
+  void escritaValor(AnotacaoModel novaAnotacao) {}
 
-  void excluirValor() {}
+  void excluirValor(AnotacaoModel novaAnotacao) {}
 
-  void atualizarValor() {}
+  void atualizarValor(AnotacaoModel novaAnotacao) {}
 }

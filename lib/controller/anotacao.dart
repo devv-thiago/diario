@@ -1,45 +1,76 @@
-import 'package:diario/model/anotacao.dart';
-import 'package:diario/services/prefs_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:diario/model/anotacao.dart';
+import 'package:diario/services/prefs_provider.dart';
 
 class AnotacaoController extends ChangeNotifier implements SharedProvider {
   late final SharedPreferences _prefs;
-
-  void retornaAnotacaoDia() {}
+  bool _isLoaded = false;
 
   AnotacaoController() {
     initRepo();
   }
 
+  bool get isLoaded => _isLoaded;
+
   @override
-  void atualizarValor() {
-    // TODO: implement atualizarValor
+  Future<String> atualizarValor(AnotacaoModel anotacao) async {
+    if (!_isLoaded) return "SharedPreferences não carregado ainda.";
+
+    List<String>? result =
+        _prefs.getStringList(anotacao.dataAnotacao.toString());
+    if (result != null) {
+      bool result2 = await excluirValor(anotacao);
+      if (result2) {
+        result2 = await escritaValor(anotacao);
+        if (result2) {
+          return "Novo valor gravado.";
+        } else {
+          return "Erro ao gravar novo valor.";
+        }
+      } else {
+        return "Erro ao excluir valor";
+      }
+    } else {
+      await escritaValor(anotacao);
+    }
+    return "Operação realizada.";
   }
 
   @override
-  void escritaValor(DateTime dataAnotacao, AnotacaoModel novaAnotacao) {
-    _prefs.setStringList("", <String>[]);
+  Future<bool> escritaValor(AnotacaoModel anotacao) async {
+    if (!_isLoaded) return false;
+
+    bool result = await _prefs.setStringList(anotacao.dataAnotacao.toString(), [
+      anotacao.conteudo,
+      anotacao.caminhoImagem,
+    ]);
+    return result;
   }
 
   @override
-  void excluirValor() {
-    _prefs.remove("");
+  Future<bool> excluirValor(AnotacaoModel anotacao) async {
+    if (!_isLoaded) return false;
+
+    bool result = await _prefs.remove(anotacao.dataAnotacao.toString());
+    return result;
   }
 
   @override
-  void leituraValor(List anotacoes, DateTime dataAnotacao) {
-    _prefs.getStringList("");
+  List<String>? leituraValor(DateTime dataAnotacao) {
+    if (!_isLoaded) return null;
+
+    return _prefs.getStringList(dataAnotacao.toString());
   }
 
   @override
   void initRepo() async {
     try {
-      _prefs = await SharedPreferences.getInstance().onError((e, S) {
-        throw Exception("Erro shared prefs: $e");
-      });
+      _prefs = await SharedPreferences.getInstance();
+      _isLoaded = true;
+      notifyListeners(); // Notifica os listeners quando o carregamento estiver concluído
     } catch (e) {
-      throw Exception("Ocorreu um erro no método");
+      throw Exception("Ocorreu um erro no método initRepo: $e");
     }
   }
 }

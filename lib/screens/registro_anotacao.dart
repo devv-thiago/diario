@@ -21,9 +21,9 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
 
   @override
   void initState() {
+    super.initState();
     _selectedAlign = TextAlign.left;
     _conteudoController = TextEditingController();
-    super.initState();
   }
 
   @override
@@ -33,147 +33,157 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
 
     return Scaffold(
       backgroundColor: const Color.fromRGBO(251, 246, 246, 1),
-      body: Padding(
-        padding: const EdgeInsets.only(left: 20, right: 20),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+      body: Consumer<AnotacaoController>(
+        builder: (context, anotacaoController, child) {
+          if (!anotacaoController.isLoaded) {
+            // Exibe um indicador de carregamento enquanto os SharedPreferences são carregados
+            return Center(child: CircularProgressIndicator());
+          }
+
+          return Padding(
+            padding: const EdgeInsets.only(left: 20, right: 20),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedAlign = TextAlign.left;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.format_align_left,
-                    size: 35,
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedAlign = TextAlign.left;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.format_align_left,
+                        size: 35,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedAlign = TextAlign.center;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.format_align_center,
+                        size: 35,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _selectedAlign = TextAlign.right;
+                        });
+                      },
+                      icon: const Icon(
+                        Icons.format_align_right,
+                        size: 35,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        setState(() {
+                          _isBold = !_isBold;
+                        });
+                      },
+                      icon: Icon(
+                        Icons.format_bold_rounded,
+                        size: 35,
+                        color: _isBold ? Colors.black : Colors.grey,
+                      ),
+                    ),
+                    IconButton(
+                      onPressed: () {
+                        // Placeholder for future image picking implementation
+                      },
+                      icon: const Icon(
+                        Icons.photo_library_rounded,
+                        size: 35,
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  height: deviceInfo.size.height * 0.4,
+                  width: deviceInfo.size.width,
+                  decoration: const BoxDecoration(
+                    color: Color.fromRGBO(255, 255, 255, 1),
+                    borderRadius: BorderRadius.all(Radius.circular(20)),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black12,
+                        offset: Offset(8, 10),
+                        blurRadius: 10,
+                      )
+                    ],
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context).requestFocus(FocusNode());
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: TextFormField(
+                        controller: _conteudoController,
+                        style: TextStyle(
+                          fontWeight:
+                              _isBold ? FontWeight.bold : FontWeight.normal,
+                        ),
+                        textAlign: _selectedAlign,
+                        maxLines: null,
+                        expands: true,
+                        textAlignVertical: TextAlignVertical.top,
+                        decoration: const InputDecoration(
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _selectedAlign = TextAlign.center;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.format_align_justify,
-                    size: 35,
+                const SizedBox(height: 40),
+                ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(
+                        const Color.fromRGBO(255, 112, 137, 1)),
+                    elevation: MaterialStateProperty.all(10),
                   ),
-                ),
-                IconButton(
                   onPressed: () {
-                    setState(() {
-                      _selectedAlign = TextAlign.right;
-                    });
+                    _salvarAnotacao(anotacaoController);
                   },
-                  icon: const Icon(
-                    Icons.format_align_right,
-                    size: 35,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _isBold = !_isBold;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.format_bold_rounded,
-                    size: 35,
-                  ),
-                ),
-                IconButton(
-                  onPressed: () {
-                    setState(() {
-                      _isBold = !_isBold;
-                    });
-                  },
-                  icon: const Icon(
-                    Icons.photo_library_rounded,
-                    size: 35,
+                  child: Text(
+                    'Salvar Anotação',
+                    style: GoogleFonts.poppins(
+                      fontSize: 15,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ],
             ),
-            Container(
-              height: deviceInfo.size.height * 0.4,
-              width: deviceInfo.size.width,
-              decoration: const BoxDecoration(
-                color: Color.fromRGBO(255, 255, 255, 1),
-                borderRadius: BorderRadius.all(Radius.circular(20)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black12,
-                    offset: Offset(8, 10),
-                    blurRadius: 10,
-                  )
-                ],
-              ),
-              child: GestureDetector(
-                onTap: () {
-                  FocusScope.of(context).requestFocus(FocusNode());
-                },
-                child: Padding(
-                  padding: const EdgeInsets.all(10),
-                  child: TextFormField(
-                    controller: _conteudoController,
-                    style: TextStyle(
-                      fontWeight: _isBold ? FontWeight.bold : FontWeight.normal,
-                    ),
-                    textAlign: _selectedAlign,
-                    maxLines: null,
-                    expands: true,
-                    textAlignVertical: TextAlignVertical.top,
-                    decoration: const InputDecoration(
-                      border: InputBorder.none,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 40,
-            ),
-            ElevatedButton(
-              style: ButtonStyle(
-                backgroundColor: WidgetStateProperty.all(
-                    const Color.fromRGBO(255, 112, 137, 1)),
-                elevation: WidgetStateProperty.all(10),
-              ),
-              onPressed: () {}, //_salvarAnotacao(anotacaoController),
-              child: Text(
-                'Salvar Anotação',
-                style: GoogleFonts.poppins(
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-            ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
 
-  // void _salvarAnotacao(AnotacaoController anotacaoController) async {
-  //   try {
-  //     resultado = await anotacaoController.adicionarAnotacao(
-  //       AnotacaoModel(
-  //         dataAnotacao:
-  //             widget.selectedDay, // Usando a data selecionada pelo usuário
-  //         conteudo: _conteudoController.text,
-  //       ),
-  //     );
-  //     debugPrint('Resultado do salvamento: $resultado');
+  void _salvarAnotacao(AnotacaoController anotacaoController) async {
+    try {
+      resultado = await anotacaoController.atualizarValor(
+        AnotacaoModel(
+          dataAnotacao: widget.selectedDay,
+          conteudo: _conteudoController.text,
+          caminhoImagem:
+              '', // Adicione lógica para lidar com imagem se necessário
+        ),
+      );
+      debugPrint('Resultado do salvamento: $resultado');
 
-  //     Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
-  //   } catch (e) {
-  //     debugPrint('Erro ao salvar anotação: $e');
-  //     // Implemente o tratamento de erro conforme necessário
-  //   }
-  // }
+      Navigator.of(context).pop(); // Fecha a tela de cadastro após salvar
+    } catch (e) {
+      debugPrint('Erro ao salvar anotação: $e');
+      // Implemente o tratamento de erro conforme necessário
+    }
+  }
 }

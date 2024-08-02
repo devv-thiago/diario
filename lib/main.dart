@@ -10,7 +10,7 @@ void main() async {
   await initializeDateFormatting();
 
   runApp(
-    Provider(
+    ChangeNotifierProvider(
       create: (context) => AnotacaoController(),
       child: const MyApp(),
     ),

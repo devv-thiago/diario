@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
 import 'package:diario/widget/anotacao.dart';
+import 'package:flutter/material.dart';
 import 'package:diario/widget/calendario.dart';
 import 'package:diario/controller/anotacao.dart';
 import 'package:provider/provider.dart';
@@ -14,9 +14,9 @@ class Homepage extends StatefulWidget {
 class _HomepageState extends State<Homepage> {
   DateTime? selectedDay;
 
-
   @override
   Widget build(BuildContext context) {
+    // Obtém o AnotacaoController do Provider
     AnotacaoController anotacaoController =
         Provider.of<AnotacaoController>(context, listen: false);
     MediaQueryData deviceSize = MediaQuery.of(context);
@@ -41,14 +41,13 @@ class _HomepageState extends State<Homepage> {
                 });
               },
             ),
-            // Expanded(
-            //   child: Anotacao(
-            //     height: deviceSize.size.height * 0.7,
-            //     width: deviceSize.size.width * 0.95,
-            //     anotacoes: anotacaoController.anotacoes,
-            //     selectedDay: selectedDay ?? DateTime.now(),
-            //   ),
-            // ),
+            Expanded(
+              child: Anotacao(
+                height: deviceSize.size.height * 0.7,
+                width: deviceSize.size.width * 0.95,
+                selectedDay: selectedDay ?? DateTime.now(),
+              ),
+            ),
           ],
         ),
       ),
