@@ -19,7 +19,6 @@ class Anotacao extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Obtém o AnotacaoController do Provider
     final anotacaoController = Provider.of<AnotacaoController>(context);
 
     return FutureBuilder<List<String>?>(
@@ -33,13 +32,11 @@ class Anotacao extends StatelessWidget {
         } else {
           final anotacao = snapshot.data;
 
-          // Formata a data e o dia da semana
           final DateFormat dateFormat = DateFormat('dd/MM/yyyy');
           final String formattedDate = dateFormat.format(selectedDay);
           final String dayOfWeek =
               DateFormat('EEEE', 'pt_BR').format(selectedDay);
 
-          // Capitaliza a primeira letra do dia da semana
           final String capitalizedDayOfWeek =
               dayOfWeek[0].toUpperCase() + dayOfWeek.substring(1);
 
@@ -68,69 +65,83 @@ class Anotacao extends StatelessWidget {
         children: [
           Container(
             padding:
-                const EdgeInsets.only(left: 15, right: 15, bottom: 10, top: 10),
+                const EdgeInsets.only(left: 25, right: 15, bottom: 10, top: 30),
             alignment: Alignment.centerLeft,
             child: Text(
               "Meus dias",
               style: GoogleFonts.poppins(
                 fontSize: 35,
                 fontWeight: FontWeight.bold,
+                color: Colors.black.withOpacity(0.8),
               ),
             ),
           ),
           SizedBox(
             height: height * 0.5,
             width: width,
-            child: Card(
-              elevation: 10,
-              color: const Color.fromRGBO(255, 255, 255, 1),
-              margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            dayOfWeek,
-                            style: GoogleFonts.poppins(
-                              fontSize: 25,
-                              fontWeight: FontWeight.bold,
+            child: InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => RegistroAnotacaoPage(
+                      conteudo,
+                      selectedDay: selectedDay,
+                      dayOfWeek: dayOfWeek,
+                      formattedDate: formattedDate,
+                    ),
+                  ),
+                );
+              },
+              child: Card(
+                elevation: 10,
+                color: const Color.fromRGBO(255, 255, 255, 1),
+                margin: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+                child: Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              dayOfWeek,
+                              style: GoogleFonts.poppins(
+                                fontSize: 25,
+                                fontWeight: FontWeight.bold,
+                                color: Colors.black.withOpacity(0.8),
+                              ),
                             ),
-                          ),
-                          IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => RegistroAnotacaoPage(
-                                    selectedDay: selectedDay,
-                                  ),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.edit_square),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        formattedDate,
-                        style: GoogleFonts.poppins(fontSize: 20),
-                      ),
-                      const SizedBox(height: 8.0),
-                      Expanded(
-                        child: SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Text(
-                            conteudo,
-                            style: GoogleFonts.poppins(fontSize: 20),
+                          ],
+                        ),
+                        Text(
+                          formattedDate,
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            color: Colors.black.withOpacity(0.8),
                           ),
                         ),
-                      ),
-                    ],
+                        const SizedBox(height: 8.0),
+                        Expanded(
+                          child: SingleChildScrollView(
+                            scrollDirection: Axis.vertical,
+                            child: Text(
+                              conteudo,
+                              style: GoogleFonts.poppins(
+                                fontSize: 23,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.black.withOpacity(0.8),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -148,6 +159,9 @@ class Anotacao extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => RegistroAnotacaoPage(
+              dayOfWeek: "",
+              formattedDate: "",
+              "",
               selectedDay: selectedDay,
             ),
           ),
@@ -164,6 +178,7 @@ class Anotacao extends StatelessWidget {
               style: GoogleFonts.poppins(
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
+                color: Colors.black.withOpacity(0.8),
               ),
               textAlign: TextAlign.center,
             ),

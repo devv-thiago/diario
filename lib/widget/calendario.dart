@@ -12,8 +12,8 @@ class Calendario extends StatefulWidget {
     this.height = 0,
     this.width = 0,
     this.onDaySelected,
-    Key? key,
-  }) : super(key: key);
+    super.key,
+  });
 
   @override
   _CalendarioState createState() => _CalendarioState();
@@ -26,6 +26,14 @@ class _CalendarioState extends State<Calendario> {
   String capitalizeMonth(DateTime date) {
     String month = DateFormat.MMMM('pt_BR').format(date);
     return month[0].toUpperCase() + month.substring(1);
+  }
+
+  String capitalize(String stringToCap) {
+    return "${stringToCap[0].toUpperCase()}${stringToCap.substring(1)}";
+  }
+
+  String removeDot(String day) {
+    return day.replaceAll('.', '');
   }
 
   @override
@@ -50,25 +58,30 @@ class _CalendarioState extends State<Calendario> {
           formatButtonVisible: false,
           titleTextStyle: GoogleFonts.poppins(
             color: Colors.white,
-            fontSize: 25,
+            fontSize: 30,
             fontWeight: FontWeight.bold,
           ),
           titleTextFormatter: (date, locale) => capitalizeMonth(date),
         ),
         calendarStyle: CalendarStyle(
+          selectedTextStyle: const TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+          ),
           tablePadding: const EdgeInsets.only(left: 10, right: 10),
           outsideDaysVisible: false,
           selectedDecoration: const BoxDecoration(
-            color: Colors.transparent,
-            shape: BoxShape.rectangle,
+            color: Color.fromRGBO(252, 93, 127, 1),
+            shape: BoxShape.circle,
           ),
-          defaultDecoration: BoxDecoration(
+          defaultDecoration: const BoxDecoration(
             color: Colors.transparent,
-            shape: BoxShape.rectangle,
+            shape: BoxShape.circle,
           ),
           todayDecoration: const BoxDecoration(
             color: Colors.transparent,
-            shape: BoxShape.rectangle,
+            shape: BoxShape.circle,
           ),
           defaultTextStyle: GoogleFonts.poppins(
             color: Colors.white,
@@ -102,6 +115,11 @@ class _CalendarioState extends State<Calendario> {
             fontSize: 20,
             fontWeight: FontWeight.bold,
           ),
+          dowTextFormatter: (date, locale) {
+            String dayText = DateFormat.E(locale).format(date);
+            String dayCap = capitalize(dayText);
+            return removeDot(dayCap);
+          },
         ),
         firstDay: DateTime.utc(2020, 1, 1),
         lastDay: DateTime.utc(2099, 12, 31),
