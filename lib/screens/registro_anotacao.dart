@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:diario/controller/anotacao.dart';
 import 'package:diario/model/anotacao.dart';
 import 'dart:io';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class RegistroAnotacaoPage extends StatefulWidget {
   final DateTime selectedDay;
@@ -188,64 +189,64 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                         FocusScope.of(context).requestFocus(FocusNode());
                       },
                       child: Padding(
-                        padding:
-                            const EdgeInsets.only(top: 20, left: 30, right: 30),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: PageView(
-                                children: [
-                                  SizedBox(
-                                    child: TextFormField(
-                                      controller: _conteudoController,
-                                      style: TextStyle(
-                                        fontSize: 23,
-                                        fontWeight: _isBold
-                                            ? FontWeight.bold
-                                            : FontWeight.normal,
-                                      ),
-                                      textAlign: _selectedAlign,
-                                      maxLines: null,
-                                      expands: true,
-                                      decoration: const InputDecoration(
-                                        border: InputBorder.none,
-                                      ),
-                                    ),
-                                  ),
-                                  if (_imageFiles.isNotEmpty)
-                                    ..._imageFiles.asMap().entries.map(
-                                      (entry) {
-                                        int index = entry.key;
-                                        File file = entry.value;
-                                        return Stack(
-                                          children: [
-                                            Positioned(
-                                              top: 8,
-                                              right: 8,
-                                              child: IconButton(
-                                                icon: const Icon(
-                                                  Icons.delete,
-                                                  color: Colors.red,
-                                                ),
-                                                onPressed: () {
-                                                  _removeImage(index);
-                                                },
-                                              ),
-                                            ),
-                                            Center(
-                                              child: Image.file(
-                                                file,
-                                                fit: BoxFit.cover,
-                                              ),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    ),
-                                ],
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                        ),
+                        child: CarouselSlider(
+                          items: [
+                            SizedBox(
+                              child: TextFormField(
+                                controller: _conteudoController,
+                                style: TextStyle(
+                                  fontSize: 23,
+                                  fontWeight: _isBold
+                                      ? FontWeight.bold
+                                      : FontWeight.normal,
+                                ),
+                                textAlign: _selectedAlign,
+                                maxLines: null,
+                                expands: true,
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+                                ),
                               ),
                             ),
+                            if (_imageFiles.isNotEmpty)
+                              ..._imageFiles.asMap().entries.map(
+                                (entry) {
+                                  int index = entry.key;
+                                  File file = entry.value;
+                                  return Stack(
+                                    children: [
+                                      Positioned(
+                                        top: 8,
+                                        right: 8,
+                                        child: IconButton(
+                                          icon: const Icon(
+                                            Icons.delete,
+                                            color: Colors.red,
+                                          ),
+                                          onPressed: () {
+                                            _removeImage(index);
+                                          },
+                                        ),
+                                      ),
+                                      Center(
+                                        child: Image.file(
+                                          file,
+                                          fit: BoxFit.cover,
+                                        ),
+                                      ),
+                                    ],
+                                  );
+                                },
+                              ),
                           ],
+                          options: CarouselOptions(
+                            height: deviceInfo.size.height * 0.4,
+                            enlargeCenterPage: true,
+                            enableInfiniteScroll: false,
+                          ),
                         ),
                       ),
                     ),
