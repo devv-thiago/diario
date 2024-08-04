@@ -7,7 +7,7 @@ abstract class SharedProvider {
 
   void escritaValor(AnotacaoModel novaAnotacao) {}
 
-  void excluirValor(AnotacaoModel novaAnotacao) {}
+  void excluirValor(DateTime dataAnotacao) {}
 
   void atualizarValor(AnotacaoModel novaAnotacao) {}
 }

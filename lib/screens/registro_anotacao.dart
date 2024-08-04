@@ -1,8 +1,11 @@
+import 'package:diario/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:diario/controller/anotacao.dart';
 import 'package:diario/model/anotacao.dart';
+import 'dart:io';
 
 class RegistroAnotacaoPage extends StatefulWidget {
   final DateTime selectedDay;
@@ -27,12 +30,30 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   bool _isBold = false;
   late TextEditingController _conteudoController;
   dynamic resultado;
+  List<File> _imageFiles = [];
 
   @override
   void initState() {
     super.initState();
     _selectedAlign = TextAlign.left;
     _conteudoController = TextEditingController(text: widget.conteudo ?? "");
+  }
+
+  Future<void> _pickImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _imageFiles.add(File(pickedFile.path));
+      });
+    }
+  }
+
+  void _removeImage(int index) {
+    setState(() {
+      _imageFiles.removeAt(index);
+    });
   }
 
   @override
@@ -135,8 +156,8 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                         ),
                       ),
                       IconButton(
-                        onPressed: () {
-                          // Placeholder for future image picking implementation
+                        onPressed: () async {
+                          await _pickImage();
                         },
                         icon: const Icon(
                           Icons.photo_library_rounded,
@@ -169,20 +190,62 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       child: Padding(
                         padding:
                             const EdgeInsets.only(top: 20, left: 30, right: 30),
-                        child: TextFormField(
-                          controller: _conteudoController,
-                          style: TextStyle(
-                            fontSize: 23,
-                            fontWeight:
-                                _isBold ? FontWeight.bold : FontWeight.normal,
-                          ),
-                          textAlign: _selectedAlign,
-                          maxLines: null,
-                          expands: true,
-                          textAlignVertical: TextAlignVertical.top,
-                          decoration: const InputDecoration(
-                            border: InputBorder.none,
-                          ),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: PageView(
+                                children: [
+                                  SizedBox(
+                                    child: TextFormField(
+                                      controller: _conteudoController,
+                                      style: TextStyle(
+                                        fontSize: 23,
+                                        fontWeight: _isBold
+                                            ? FontWeight.bold
+                                            : FontWeight.normal,
+                                      ),
+                                      textAlign: _selectedAlign,
+                                      maxLines: null,
+                                      expands: true,
+                                      decoration: const InputDecoration(
+                                        border: InputBorder.none,
+                                      ),
+                                    ),
+                                  ),
+                                  if (_imageFiles.isNotEmpty)
+                                    ..._imageFiles.asMap().entries.map(
+                                      (entry) {
+                                        int index = entry.key;
+                                        File file = entry.value;
+                                        return Stack(
+                                          children: [
+                                            Positioned(
+                                              top: 8,
+                                              right: 8,
+                                              child: IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.red,
+                                                ),
+                                                onPressed: () {
+                                                  _removeImage(index);
+                                                },
+                                              ),
+                                            ),
+                                            Center(
+                                              child: Image.file(
+                                                file,
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
@@ -225,10 +288,14 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
         AnotacaoModel(
           dataAnotacao: widget.selectedDay,
           conteudo: _conteudoController.text,
-          caminhoImagem: '',
+          caminhoImagem: _imageFiles.isNotEmpty ? _imageFiles[0].path : '',
         ),
       );
-      Navigator.pop(context);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute<void>(
+          builder: (BuildContext context) => const Homepage(),
+        ),
+      );
     } catch (e) {
       debugPrint('Erro ao salvar anotação: $e');
     }

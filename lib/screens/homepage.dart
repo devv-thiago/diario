@@ -30,7 +30,7 @@ class _HomepageState extends State<Homepage> {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Calendario(
-              height: deviceSize.size.height * 0.33,
+              height: deviceSize.size.height * 0.40,
               width: deviceSize.size.width * 0.90,
               onDaySelected: (day) {
                 setState(() {

@@ -41,10 +41,14 @@ class Anotacao extends StatelessWidget {
               dayOfWeek[0].toUpperCase() + dayOfWeek.substring(1);
 
           if (anotacao != null && anotacao.isNotEmpty) {
-            return _buildAnotacaoCard(
-                context, formattedDate, capitalizedDayOfWeek, anotacao[0]);
+            return _buildAnotacaoCard(context, formattedDate,
+                capitalizedDayOfWeek, anotacao[0], anotacaoController);
           } else {
-            return _buildEmptyAnotacao(context);
+            return _buildEmptyAnotacao(
+              context,
+              formattedDate,
+              capitalizedDayOfWeek,
+            );
           }
         }
       },
@@ -56,8 +60,12 @@ class Anotacao extends StatelessWidget {
     return anotacaoController.leituraValor(selectedDay);
   }
 
-  Widget _buildAnotacaoCard(BuildContext context, String formattedDate,
-      String dayOfWeek, String conteudo) {
+  Widget _buildAnotacaoCard(
+      BuildContext context,
+      String formattedDate,
+      String dayOfWeek,
+      String conteudo,
+      AnotacaoController anotacaoController) {
     return SizedBox(
       height: height,
       width: width,
@@ -117,6 +125,16 @@ class Anotacao extends StatelessWidget {
                                 color: Colors.black.withOpacity(0.8),
                               ),
                             ),
+                            IconButton(
+                              icon: Icon(
+                                size: 35,
+                                Icons.delete,
+                                color: Colors.black.withOpacity(0.8),
+                              ),
+                              onPressed: () {
+                                anotacaoController.excluirValor(selectedDay);
+                              },
+                            ),
                           ],
                         ),
                         Text(
@@ -152,17 +170,21 @@ class Anotacao extends StatelessWidget {
     );
   }
 
-  Widget _buildEmptyAnotacao(BuildContext context) {
+  Widget _buildEmptyAnotacao(
+    BuildContext context,
+    String formattedDate,
+    String dayOfWeek,
+  ) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
+        Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => RegistroAnotacaoPage(
-              dayOfWeek: "",
-              formattedDate: "",
               "",
               selectedDay: selectedDay,
+              dayOfWeek: dayOfWeek,
+              formattedDate: formattedDate,
             ),
           ),
         );

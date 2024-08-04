@@ -20,7 +20,7 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
     List<String>? result =
         _prefs.getStringList(anotacao.dataAnotacao.toString());
     if (result != null) {
-      bool result2 = await excluirValor(anotacao);
+      bool result2 = await excluirValor(anotacao.dataAnotacao);
       if (result2) {
         result2 = await escritaValor(anotacao);
         if (result2) {
@@ -49,10 +49,11 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
   }
 
   @override
-  Future<bool> excluirValor(AnotacaoModel anotacao) async {
+  Future<bool> excluirValor(DateTime dataAnotacao) async {
     if (!_isLoaded) return false;
 
-    bool result = await _prefs.remove(anotacao.dataAnotacao.toString());
+    bool result = await _prefs.remove(dataAnotacao.toString());
+    notifyListeners();
     return result;
   }
 
