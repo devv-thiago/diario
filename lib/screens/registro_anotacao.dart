@@ -14,7 +14,7 @@ class RegistroAnotacaoPage extends StatefulWidget {
   final String dayOfWeek;
   final String formattedDate;
 
-  RegistroAnotacaoPage(
+  const RegistroAnotacaoPage(
     this.conteudo, {
     super.key,
     required this.selectedDay,
@@ -31,7 +31,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
   bool _isBold = false;
   late TextEditingController _conteudoController;
   dynamic resultado;
-  List<File> _imageFiles = [];
+  final List<File> _imageFiles = [];
 
   @override
   void initState() {
@@ -170,31 +170,32 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                   const SizedBox(
                     height: 20,
                   ),
-                  Container(
-                    height: deviceInfo.size.height * 0.4,
-                    width: deviceInfo.size.width,
-                    decoration: const BoxDecoration(
-                      color: Color.fromRGBO(255, 255, 255, 1),
-                      borderRadius: BorderRadius.all(Radius.circular(20)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black12,
-                          offset: Offset(8, 10),
-                          blurRadius: 10,
-                        )
-                      ],
-                    ),
-                    child: GestureDetector(
-                      onTap: () {
-                        FocusScope.of(context).requestFocus(FocusNode());
-                      },
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          top: 20,
+                  CarouselSlider(
+                    items: [
+                      // Container para o campo de texto
+                      Container(
+                        height: deviceInfo.size.height * 0.4,
+                        width: deviceInfo.size.width,
+                        decoration: const BoxDecoration(
+                          color: Color.fromRGBO(255, 255, 255, 1),
+                          borderRadius: BorderRadius.all(Radius.circular(20)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black12,
+                              offset: Offset(8, 10),
+                              blurRadius: 10,
+                            )
+                          ],
                         ),
-                        child: CarouselSlider(
-                          items: [
-                            SizedBox(
+                        child: GestureDetector(
+                          onTap: () {
+                            FocusScope.of(context).requestFocus(FocusNode());
+                          },
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                              top: 20,
+                            ),
+                            child: SizedBox(
                               child: TextFormField(
                                 controller: _conteudoController,
                                 style: TextStyle(
@@ -211,44 +212,63 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                                 ),
                               ),
                             ),
-                            if (_imageFiles.isNotEmpty)
-                              ..._imageFiles.asMap().entries.map(
-                                (entry) {
-                                  int index = entry.key;
-                                  File file = entry.value;
-                                  return Stack(
-                                    children: [
-                                      Positioned(
-                                        top: 8,
-                                        right: 8,
-                                        child: IconButton(
-                                          icon: const Icon(
-                                            Icons.delete,
-                                            color: Colors.red,
-                                          ),
-                                          onPressed: () {
-                                            _removeImage(index);
-                                          },
-                                        ),
-                                      ),
-                                      Center(
-                                        child: Image.file(
-                                          file,
-                                          fit: BoxFit.cover,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              ),
-                          ],
-                          options: CarouselOptions(
-                            height: deviceInfo.size.height * 0.4,
-                            enlargeCenterPage: true,
-                            enableInfiniteScroll: false,
                           ),
                         ),
                       ),
+                      // Containers para exibir as imagens
+                      if (_imageFiles.isEmpty)
+                        const Placeholder(
+                          color: Colors.transparent,
+                          child: Center(
+                            child: Text(
+                              "Sem Imagens",
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        )
+                      else
+                        ..._imageFiles.map((image) => Stack(
+                              children: [
+                                Container(
+                                  height: deviceInfo.size.height * 0.4,
+                                  width: deviceInfo.size.width,
+                                  decoration: BoxDecoration(
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(20)),
+                                    boxShadow: const [
+                                      BoxShadow(
+                                        color: Colors.black12,
+                                        offset: Offset(8, 10),
+                                        blurRadius: 10,
+                                      )
+                                    ],
+                                    image: DecorationImage(
+                                      image: FileImage(image),
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  top: 10,
+                                  right: 10,
+                                  child: IconButton(
+                                    icon: const Icon(Icons.delete,
+                                        color: Colors.red, size: 30),
+                                    onPressed: () {
+                                      _removeImage(_imageFiles.indexOf(image));
+                                    },
+                                  ),
+                                ),
+                              ],
+                            )),
+                    ],
+                    options: CarouselOptions(
+                      height: deviceInfo.size.height * 0.4,
+                      enlargeCenterPage: true,
+                      enableInfiniteScroll: false,
                     ),
                   ),
                   const SizedBox(height: 40),
