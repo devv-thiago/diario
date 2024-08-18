@@ -330,7 +330,7 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
           dataAnotacao: widget.selectedDay,
           conteudo: [
             _conteudoController.text,
-            _imageFiles.isNotEmpty ? _imageFiles[0].path : ''
+            ..._imageFiles.map((file) => file.path)
           ],
         ),
       );

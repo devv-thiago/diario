@@ -11,7 +11,7 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  DateTime? selectedDay;
+  DateTime selectedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +42,7 @@ class _HomepageState extends State<Homepage> {
               child: Anotacao(
                 height: deviceSize.size.height * 0.60,
                 width: deviceSize.size.width,
-                selectedDay: selectedDay ?? DateTime.now(),
+                selectedDay: selectedDay,
               ),
             ),
           ],
