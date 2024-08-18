@@ -38,6 +38,19 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
     super.initState();
     _selectedAlign = TextAlign.left;
     _conteudoController = TextEditingController(text: widget.conteudo ?? "");
+
+    // Carregar conteúdo e imagens associadas à anotação para o dia selecionado
+    final List<String>? anotacaoConteudo =
+        Provider.of<AnotacaoController>(context, listen: false)
+            .leituraValor(widget.selectedDay);
+
+    if (anotacaoConteudo != null && anotacaoConteudo.isNotEmpty) {
+      // A posição 0 é o conteúdo escrito; as demais posições são caminhos de imagens
+      _conteudoController.text = anotacaoConteudo[0];
+      for (int i = 1; i < anotacaoConteudo.length; i++) {
+        _imageFiles.add(File(anotacaoConteudo[i]));
+      }
+    }
   }
 
   Future<void> _pickImage() async {
@@ -72,15 +85,13 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
           return Padding(
             padding: const EdgeInsets.only(
               top: 80,
-              left: 20,
-              right: 20,
             ),
             child: SingleChildScrollView(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Container(
-                    padding: const EdgeInsets.only(left: 25),
+                    padding: const EdgeInsets.only(left: 40),
                     width: deviceInfo.size.width,
                     height: deviceInfo.size.height * 0.18,
                     alignment: Alignment.centerLeft,
@@ -108,171 +119,180 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
                       ],
                     ),
                   ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedAlign = TextAlign.left;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.format_align_left,
-                          size: 35,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 15, right: 15),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedAlign = TextAlign.left;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.format_align_left,
+                            size: 35,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedAlign = TextAlign.center;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.format_align_center,
-                          size: 35,
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedAlign = TextAlign.center;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.format_align_center,
+                            size: 35,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _selectedAlign = TextAlign.right;
-                          });
-                        },
-                        icon: const Icon(
-                          Icons.format_align_right,
-                          size: 35,
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _selectedAlign = TextAlign.right;
+                            });
+                          },
+                          icon: const Icon(
+                            Icons.format_align_right,
+                            size: 35,
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          setState(() {
-                            _isBold = !_isBold;
-                          });
-                        },
-                        icon: Icon(
-                          Icons.format_bold_rounded,
-                          size: 40,
-                          color: Colors.black.withOpacity(0.8),
+                        IconButton(
+                          onPressed: () {
+                            setState(() {
+                              _isBold = !_isBold;
+                            });
+                          },
+                          icon: Icon(
+                            Icons.format_bold_rounded,
+                            size: 40,
+                            color: Colors.black.withOpacity(0.8),
+                          ),
                         ),
-                      ),
-                      IconButton(
-                        onPressed: () async {
-                          await _pickImage();
-                        },
-                        icon: const Icon(
-                          Icons.photo_library_rounded,
-                          size: 35,
+                        IconButton(
+                          onPressed: () async {
+                            await _pickImage();
+                          },
+                          icon: const Icon(
+                            Icons.photo_library_rounded,
+                            size: 35,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                   const SizedBox(
                     height: 20,
                   ),
-                  CarouselSlider(
-                    items: [
-                      // Container para o campo de texto
-                      Container(
-                        height: deviceInfo.size.height * 0.4,
-                        width: deviceInfo.size.width,
-                        decoration: const BoxDecoration(
-                          color: Color.fromRGBO(255, 255, 255, 1),
-                          borderRadius: BorderRadius.all(Radius.circular(20)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black12,
-                              offset: Offset(8, 10),
-                              blurRadius: 10,
-                            )
-                          ],
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          },
-                          child: Padding(
-                            padding: const EdgeInsets.only(
-                              top: 20,
+                  SizedBox(
+                    height: deviceInfo.size.height * 0.45,
+                    width: deviceInfo.size.width,
+                    child: CarouselSlider(
+                      items: [
+                        Container(
+                          height: deviceInfo.size.height * 0.4,
+                          width: deviceInfo.size.width,
+                          decoration: const BoxDecoration(
+                            color: Color.fromRGBO(255, 255, 255, 1),
+                            borderRadius: BorderRadius.all(Radius.circular(20)),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black12,
+                                offset: Offset(8, 10),
+                                blurRadius: 10,
+                              )
+                            ],
+                          ),
+                          child: GestureDetector(
+                            onTap: () {
+                              FocusScope.of(context).requestFocus(FocusNode());
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                top: 20,
+                                left: 20,
+                              ),
+                              child: SizedBox(
+                                child: TextFormField(
+                                  controller: _conteudoController,
+                                  style: TextStyle(
+                                    fontSize: 23,
+                                    fontWeight: _isBold
+                                        ? FontWeight.bold
+                                        : FontWeight.normal,
+                                  ),
+                                  textAlign: _selectedAlign,
+                                  maxLines: null,
+                                  expands: true,
+                                  decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                  ),
+                                ),
+                              ),
                             ),
-                            child: SizedBox(
-                              child: TextFormField(
-                                controller: _conteudoController,
+                          ),
+                        ),
+                        // Containers para exibir as imagens
+                        if (_imageFiles.isEmpty)
+                          const Placeholder(
+                            color: Colors.transparent,
+                            child: Center(
+                              child: Text(
+                                "Sem Imagens",
                                 style: TextStyle(
-                                  fontSize: 23,
-                                  fontWeight: _isBold
-                                      ? FontWeight.bold
-                                      : FontWeight.normal,
-                                ),
-                                textAlign: _selectedAlign,
-                                maxLines: null,
-                                expands: true,
-                                decoration: const InputDecoration(
-                                  border: InputBorder.none,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
                                 ),
                               ),
                             ),
-                          ),
-                        ),
-                      ),
-                      // Containers para exibir as imagens
-                      if (_imageFiles.isEmpty)
-                        const Placeholder(
-                          color: Colors.transparent,
-                          child: Center(
-                            child: Text(
-                              "Sem Imagens",
-                              style: TextStyle(
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        )
-                      else
-                        ..._imageFiles.map((image) => Stack(
-                              children: [
-                                Container(
-                                  height: deviceInfo.size.height * 0.4,
-                                  width: deviceInfo.size.width,
-                                  decoration: BoxDecoration(
-                                    borderRadius: const BorderRadius.all(
-                                        Radius.circular(20)),
-                                    boxShadow: const [
-                                      BoxShadow(
-                                        color: Colors.black12,
-                                        offset: Offset(8, 10),
-                                        blurRadius: 10,
-                                      )
-                                    ],
-                                    image: DecorationImage(
-                                      image: FileImage(image),
-                                      fit: BoxFit.cover,
+                          )
+                        else
+                          ..._imageFiles.map((image) => Stack(
+                                children: [
+                                  Container(
+                                    height: deviceInfo.size.height * 0.4,
+                                    width: deviceInfo.size.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius: const BorderRadius.all(
+                                          Radius.circular(20)),
+                                      boxShadow: const [
+                                        BoxShadow(
+                                          color: Colors.black12,
+                                          offset: Offset(8, 10),
+                                          blurRadius: 10,
+                                        )
+                                      ],
+                                      image: DecorationImage(
+                                        image: FileImage(image),
+                                        fit: BoxFit.cover,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Positioned(
-                                  top: 10,
-                                  right: 10,
-                                  child: IconButton(
-                                    icon: const Icon(Icons.delete,
-                                        color: Colors.red, size: 30),
-                                    onPressed: () {
-                                      _removeImage(_imageFiles.indexOf(image));
-                                    },
+                                  Positioned(
+                                    top: 10,
+                                    right: 10,
+                                    child: IconButton(
+                                      icon: const Icon(Icons.delete,
+                                          color: Colors.red, size: 30),
+                                      onPressed: () {
+                                        _removeImage(
+                                            _imageFiles.indexOf(image));
+                                      },
+                                    ),
                                   ),
-                                ),
-                              ],
-                            )),
-                    ],
-                    options: CarouselOptions(
-                      height: deviceInfo.size.height * 0.4,
-                      enlargeCenterPage: true,
-                      enableInfiniteScroll: false,
+                                ],
+                              )),
+                      ],
+                      options: CarouselOptions(
+                        height: deviceInfo.size.height * 0.4,
+                        enlargeCenterPage: true,
+                        enableInfiniteScroll: false,
+                      ),
                     ),
                   ),
                   const SizedBox(height: 40),
-                  SizedBox(
+                  Container(
+                    padding: const EdgeInsets.only(left: 40, right: 40),
                     width: deviceInfo.size.width,
                     height: deviceInfo.size.height * 0.07,
                     child: ElevatedButton(
@@ -308,8 +328,10 @@ class _RegistroAnotacaoPageState extends State<RegistroAnotacaoPage> {
       resultado = await anotacaoController.atualizarValor(
         AnotacaoModel(
           dataAnotacao: widget.selectedDay,
-          conteudo: _conteudoController.text,
-          caminhoImagem: _imageFiles.isNotEmpty ? _imageFiles[0].path : '',
+          conteudo: [
+            _conteudoController.text,
+            _imageFiles.isNotEmpty ? _imageFiles[0].path : ''
+          ],
         ),
       );
       Navigator.of(context).pushReplacement(

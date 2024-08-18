@@ -41,10 +41,7 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
   Future<bool> escritaValor(AnotacaoModel anotacao) async {
     if (!_isLoaded) return false;
 
-    bool result = await _prefs.setStringList(anotacao.dataAnotacao.toString(), [
-      anotacao.conteudo,
-      anotacao.caminhoImagem,
-    ]);
+    bool result = await _prefs.setStringList(anotacao.dataAnotacao.toString(), anotacao.conteudo);
     return result;
   }
 

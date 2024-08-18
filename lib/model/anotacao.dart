@@ -1,11 +1,9 @@
 class AnotacaoModel {
   DateTime dataAnotacao;
-  String conteudo;
-  String caminhoImagem;
+  List<String> conteudo = [];
 
   AnotacaoModel({
     required this.dataAnotacao,
     required this.conteudo,
-    this.caminhoImagem = "",
   });
 }
