@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diario/model/anotacao.dart';
-import 'package:diario/services/prefs_provider.dart';
 
-class AnotacaoController extends ChangeNotifier implements SharedProvider {
+class AnotacaoController extends ChangeNotifier {
   late final SharedPreferences _prefs;
   bool _isLoaded = false;
 
@@ -13,7 +12,6 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
 
   bool get isLoaded => _isLoaded;
 
-  @override
   Future<String> atualizarValor(AnotacaoModel anotacao) async {
     if (!_isLoaded) return "SharedPreferences não carregado ainda.";
 
@@ -37,15 +35,14 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
     return "Operação realizada.";
   }
 
-  @override
   Future<bool> escritaValor(AnotacaoModel anotacao) async {
     if (!_isLoaded) return false;
 
-    bool result = await _prefs.setStringList(anotacao.dataAnotacao.toString(), anotacao.conteudo);
+    bool result = await _prefs.setStringList(
+        anotacao.dataAnotacao.toString(), anotacao.conteudo);
     return result;
   }
 
-  @override
   Future<bool> excluirValor(DateTime dataAnotacao) async {
     if (!_isLoaded) return false;
 
@@ -54,14 +51,31 @@ class AnotacaoController extends ChangeNotifier implements SharedProvider {
     return result;
   }
 
-  @override
   List<String>? leituraValor(DateTime dataAnotacao) {
     if (!_isLoaded) return null;
 
     return _prefs.getStringList(dataAnotacao.toString());
   }
 
-  @override
+  List<DateTime> listarDatasComAnotacoes() {
+    if (!_isLoaded) return [];
+
+    final List<DateTime> datasComAnotacoes = [];
+
+    for (String key in _prefs.getKeys()) {
+      if (_prefs.getStringList(key) != null) {
+        try {
+          final DateTime date = DateTime.parse(key);
+          datasComAnotacoes.add(date);
+        } catch (e) {
+          debugPrint("$e");
+        }
+      }
+    }
+
+    return datasComAnotacoes;
+  }
+
   void initRepo() async {
     try {
       _prefs = await SharedPreferences.getInstance();

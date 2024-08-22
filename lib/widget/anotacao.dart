@@ -175,37 +175,22 @@ class Anotacao extends StatelessWidget {
     String formattedDate,
     String dayOfWeek,
   ) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => RegistroAnotacaoPage(
-              "",
-              selectedDay: selectedDay,
-              dayOfWeek: dayOfWeek,
-              formattedDate: formattedDate,
+    return SizedBox(
+      height: height,
+      width: width,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Clique aqui para adicionar uma anotação",
+            style: GoogleFonts.poppins(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.black.withOpacity(0.8),
             ),
+            textAlign: TextAlign.center,
           ),
-        );
-      },
-      child: SizedBox(
-        height: height,
-        width: width,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              "Clique aqui para adicionar uma anotação",
-              style: GoogleFonts.poppins(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.black.withOpacity(0.8),
-              ),
-              textAlign: TextAlign.center,
-            ),
-          ],
-        ),
+        ],
       ),
     );
   }

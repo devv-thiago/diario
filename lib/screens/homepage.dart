@@ -1,3 +1,4 @@
+import 'package:diario/controller/anotacao.dart';
 import 'package:diario/widget/anotacao.dart';
 import 'package:flutter/material.dart';
 import 'package:diario/widget/calendario.dart';
@@ -12,6 +13,16 @@ class Homepage extends StatefulWidget {
 
 class _HomepageState extends State<Homepage> {
   DateTime selectedDay = DateTime.now();
+  late List<DateTime> datasAnotacoes;
+  late AnotacaoController anotacaoController;
+
+  @override
+  void initState() {
+    anotacaoController = AnotacaoController();
+    datasAnotacoes = anotacaoController.listarDatasComAnotacoes();
+    debugPrint("$datasAnotacoes");
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,10 +50,29 @@ class _HomepageState extends State<Homepage> {
               },
             ),
             Expanded(
-              child: Anotacao(
-                height: deviceSize.size.height * 0.60,
-                width: deviceSize.size.width,
-                selectedDay: selectedDay,
+              child: GestureDetector(
+                onHorizontalDragEnd: (dragDetail) {
+                  if (dragDetail.velocity.pixelsPerSecond.dx < 1) {
+                    setState(() {
+                      for (var data in datasAnotacoes) {
+                        debugPrint("$data");
+                      }
+                      selectedDay = selectedDay.add(const Duration(days: 1));
+                      debugPrint("$selectedDay");
+                    });
+                  } else {
+                    setState(() {
+                      selectedDay =
+                          selectedDay.subtract(const Duration(days: 1));
+                      debugPrint("$selectedDay");
+                    });
+                  }
+                },
+                child: Anotacao(
+                  height: deviceSize.size.height * 0.60,
+                  width: deviceSize.size.width,
+                  selectedDay: selectedDay,
+                ),
               ),
             ),
           ],
